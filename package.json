@@ -9,8 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.26.0",
     "ejs": "^2.6.1",
     "express": "^4.17.1",
+    "manakin": "^0.5.2",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
