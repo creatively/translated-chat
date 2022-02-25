@@ -15,14 +15,15 @@ const handleModalSubmit = e => {
   joinNewUser(name, language);
 }
 
-document.querySelector('.name-and-language-form').addEventListener('submit', handleModalSubmit);
+const nameAndLanguageForm = document.querySelector('.name-and-language-form') || null;
+nameAndLanguageForm ? nameAndLanguageForm.addEventListener('submit', handleModalSubmit) : null;
 
 
 function joinNewUser(name, language) {
 c(name);
 c(language);
   // announce new user
-  socket.emit('new-user', roomName, name)
+  socket.emit('new-user', roomName, name, language);
 
   // send chat message
   document.getElementById('send-container').addEventListener('submit', e => {

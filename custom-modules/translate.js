@@ -15,7 +15,7 @@ This "translate" method/module interacts with a remote translation API
 
 var axios = require("axios").default;
 
-module.exports = function translate(message, from, to, callback, roomUsersArrayExcludingSender) {
+module.exports = function translate(message, from, to, callback, roomUsersArrayExcludingSender, senderName) {
 
   var options = {
     method: 'POST',
@@ -41,7 +41,7 @@ module.exports = function translate(message, from, to, callback, roomUsersArrayE
         translations[language] = translation.translated[0];
         languageIndex++;
       });
-      callback(translations, roomUsersArrayExcludingSender);
+      callback(translations, roomUsersArrayExcludingSender, senderName);
   }).catch(function (error) {
     console.error('--- translations failed ', error);
   });

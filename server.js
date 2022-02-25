@@ -70,9 +70,16 @@ app.get('/:room', (req, res) => {
 io.on('connection', usersConnection => {
 
   // New User
-  usersConnection.on('new-user', (room, name) => {
-    usersConnection.join(room)
-    rooms[room].users[usersConnection.id] = name
+  usersConnection.on('new-user', (room, name, language) => {
+    usersConnection.join(room);
+
+    rooms[room].users[usersConnection.id] = {
+      'id': usersConnection.id,
+      'name': name,
+      'language': language,
+      'sender': false
+    }
+      
     usersConnection.to(room).broadcast.emit('user-connected', name)
   })
 
@@ -95,14 +102,14 @@ io.on('connection', usersConnection => {
     const sendersId = usersConnection.id;
 
     const getRoomUsersArray = roomName => {
-      c(roomName);
       let roomUsers = [];
+
       for (var user in rooms[roomName]) {
           for (var id in rooms[roomName][user]) {
             var _user = {
               'id': id,
-              'name': rooms[room][user][id],
-              'language': 'en',
+              'name': rooms[room][user][id].name,
+              'language': rooms[room][user][id].language,
               'sender': sendersId === id
             };
             roomUsers.push(_user);
@@ -111,17 +118,15 @@ io.on('connection', usersConnection => {
       return roomUsers;
     }
 
-    const callback_getTranslations = (translations, roomUsersArray) => {
-console.log(translations);
-      const senderName = '-senderName-';
+    const callback_getTranslations = (translations, roomUsersArray, senderName) => {
+ct(translations);
       roomUsersArray.forEach(user => {
-c(user.id+'  '+senderName+'  '+translations[user.language])
-        emitMessage(user.id, senderName, translations[user.language])
+c(user.language);
+        emitMessage(user.id, senderName, translations[user.language]);
       });
     }
 
     const emitMessage = (userId, senderName, message) => {
-      console.log(senderName+'  '+message);
       io.to(userId).emit(
         'chat-message', {
           message: message, 
@@ -131,31 +136,30 @@ c(user.id+'  '+senderName+'  '+translations[user.language])
     }
 
     const emitErrorMessageToSender = (message, room) => {
-      const sender = getRoomUsersArray(room).filter(user => user.sender);
+      const sender = getRoomUsersArray(room).filter(user => user.sender);  // check that user.sender works ok here
       emitMessage(sender.id, user.name, message);
     }
 
-    const emitUntranslatedMessages = (message, users) => {
+    const emitUntranslatedMessages = (message, users, senderName) => {
       users.forEach(user => {
-        console.log('emitUntranslatedMessages = '+ user.name);
-          emitMessage(user.id, user.name, message);
+        emitMessage(user.id, user.name, message);   // need to sendersName
       })
     }
 
     const roomUsersArray = getRoomUsersArray(room);
-    ct(roomUsersArray);
-    c(roomUsersArray);
-    const roomUsersArrayExcludingSender = roomUsersArray.filter(user => !user.sender);
-    const fromLanguage = roomUsersArray.filter(user => user.sender)[0].language;
-    const toLanguages = Array.from([ ... new Set(roomUsersArrayExcludingSender.map(arr => arr['language'])) ]);
-    const toLangaugesExcludingSendersLanguage = toLanguages.filter(language => !fromLanguage);
-    const translationsNeeded = toLangaugesExcludingSendersLanguage.length > 0;
+    if (roomUsersArray.length > 0) {
+      const roomUsersArrayExcludingSender = roomUsersArray.filter(user => !user.sender);
+      const fromLanguage = roomUsersArray.filter(user => user.sender)[0].language;
+      const senderName = roomUsersArray.filter(user => user.sender)[0].name;
+      const toLanguages = Array.from([ ... new Set(roomUsersArrayExcludingSender.map(arr => arr['language'])) ]);
+      const toLangaugesExcludingSendersLanguage = toLanguages.filter(language => !fromLanguage);
+      const translationsNeeded = toLangaugesExcludingSendersLanguage.length > 0;
     
-
     //if (translationsNeeded) {
-      translate(message, 'en', ['fr','de'], callback_getTranslations, roomUsersArrayExcludingSender)
+      translate(message, fromLanguage, toLanguages, callback_getTranslations, roomUsersArrayExcludingSender, senderName);
+    }
     //} else {
-    //  emitUntranslatedMessages(message, roomUsersArrayExcludingSender);
+    //  emitUntranslatedMessages(message, roomUsersArrayExcludingSender, senderName);
     //}
 
 
