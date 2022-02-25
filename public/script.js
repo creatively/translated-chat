@@ -7,16 +7,25 @@ const messageInput = document.getElementById('message-input')
 const c = txt => console.log(txt);
 
 
-// if in room.ejs, ask for name, then broadcast :new-user joining 
-if (messageForm != null) {
-  const name = prompt('What is your name?')
-  appendMessage('You joined')
+const handleModalSubmit = e => {
+  e.preventDefault();
+  const name = document.querySelector('#input-name').value;
+  const language = document.querySelector('#select-language').value;
+  document.querySelector('.modal-background').style.display = 'none';
+  joinNewUser(name, language);
+}
 
+document.querySelector('.name-and-language-form').addEventListener('submit', handleModalSubmit);
+
+
+function joinNewUser(name, language) {
+c(name);
+c(language);
   // announce new user
   socket.emit('new-user', roomName, name)
 
   // send chat message
-  messageForm.addEventListener('submit', e => {
+  document.getElementById('send-container').addEventListener('submit', e => {
     e.preventDefault()
     const message = messageInput.value
     appendMessage(`You: ${message}`)
