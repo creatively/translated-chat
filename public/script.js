@@ -29,7 +29,7 @@ c(language);
   document.getElementById('send-container').addEventListener('submit', e => {
     e.preventDefault()
     const message = messageInput.value
-    appendMessage(`You: ${message}`)
+    appendMessage(`me`, ``, `${message}`)
     socket.emit('send-chat-message', roomName, message)
     messageInput.value = ''
   })
@@ -37,21 +37,25 @@ c(language);
 
 // receive message
 socket.on('chat-message', data => {
-  appendMessage(`${data.name}: ${data.message}`)
+  appendMessage(`other`, `${data.name}`, `${data.message}`)
 })
 
 // connect/disconnect
 socket.on('user-connected', name => {
-  appendMessage(`${name} connected`)
+  appendMessage(`other`, `${name} connected`, ``)
 })
 
 socket.on('user-disconnected', name => {
-  appendMessage(`${name} disconnected`)
+  appendMessage(`other`, `${name} disconnected`, ``)
 })
 
 // print message
-function appendMessage(message) {
+function appendMessage(type, smalltext, bigtext) {
   const messageElement = document.createElement('div')
-  messageElement.innerText = message
+  messageElement.setAttribute('class', type)
+  const html = bigtext ? 
+    `<div class='largetext'>${bigtext}</div><div class='smalltext'>${smalltext}</div>` :
+    `<div class='smalltext'>${smalltext}</div>`
+  messageElement.innerHTML = html
   messageContainer.append(messageElement)
 }

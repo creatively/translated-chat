@@ -31,15 +31,20 @@ function getUserRooms(usersConnection) {
 
 // ------- INCOMING REQUESTS -------
 
-// all requests
+// all requests ***
 app.get('/', (req, res) => {
+c('--- /  1');
+c(rooms);
+  if(rooms === {}) {
+    a=a;
+  }
   res.render('index', { rooms: rooms })
 })
 
 
 // requested from homepage to create new room
 app.post('/room', (req, res) => {
-
+c('--- 2  /room');
   // if a known room is requested to "/room", then stay where you are
   if (rooms[req.body.room] != null) {
     return res.redirect('/')
@@ -47,6 +52,7 @@ app.post('/room', (req, res) => {
 
   // set up an empty room with 0 users and redirect to  "../roomname" 
   rooms[req.body.room] = { users: {} }
+c('--- 2a  req.body.room = '+ req.body.room);
   res.redirect(req.body.room)
 })
 
@@ -54,12 +60,16 @@ app.post('/room', (req, res) => {
 // page requests
 app.get('/:room', (req, res) => {
 
+c('--- 3  /:room');
+
   // send user to HOMEPAGE if just  localhost:3000/
   if (rooms[req.params.room] == null) {
+    c('redirecting to "/"');
     return res.redirect('/')
   }
 
   // send user to named-ROOM - either creating a new room, or joining an existing room
+  c('redirecting to "room" - '+req.params.room+'..-->');
   res.render('room', { roomName: req.params.room })
 })
 
@@ -121,7 +131,6 @@ io.on('connection', usersConnection => {
     const callback_getTranslations = (translations, roomUsersArray, senderName) => {
 ct(translations);
       roomUsersArray.forEach(user => {
-c(user.language);
         emitMessage(user.id, senderName, translations[user.language]);
       });
     }
@@ -164,9 +173,6 @@ c(user.language);
 
 
   })
-
-  // ------ TRANSLATION HANDLING -------
-
 
 })
 
