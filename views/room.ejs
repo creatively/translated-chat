@@ -34,16 +34,64 @@
 
     #message-container {
       position: fixed;
-      bottom: 72px;
+      bottom: 90px;
       padding: 0px 10px;
-      /*font-family: 'Bradley Hand';*/
       font-size: 20px;
       width: calc(100% - 20px);
     }
 
       #message-container div {
-        padding: 5px;
+        padding: 0;
+        margin-bottom: 5px;
       }
+
+        .largetext {
+          margin-bottom: 0;
+        }
+          .me .largetext {
+            margin-left: 11%;
+          }
+          .other .largetext {
+            margin-right: 10%;
+          }
+          .largetext span {
+            position: relative;
+            background: #fff;
+            color: #000;
+            font-family: Arial;
+            font-size: 20px;
+            line-height: 34px;
+            box-shadow: 5px 5px 8px -2px #777777;
+            text-align: center;
+            /*width: 250px;*/
+            border-radius: 10px;
+            padding: 3px 10px;
+            border: 2px solid black;
+            display: inline-block;
+            padding: 0 12px;
+          }
+          .largetext span:after {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 0;
+            z-index: 1;
+            border-style: solid;
+            border-width: 0 10px 9px 0;
+            border-color: transparent #fff transparent transparent;
+            bottom: -9px;
+            left: 20px;
+            margin-left: -5px;
+          }
+          .me .largetext span:after {
+            left: auto;
+            right: 20px;
+          }
+
+        .smalltext {
+          position: relative;
+          left: 34px;
+        }
 
         .me {
           text-align: right;
@@ -73,8 +121,6 @@
         }
 
         #message-container .smalltext {
-          //border-bottom: 1px solid #05d0e6;
-          border-bottom: 1px solid white;
           padding-top: 0;
         }
 

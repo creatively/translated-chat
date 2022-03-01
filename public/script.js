@@ -54,7 +54,7 @@ function appendMessage(type, smalltext, bigtext) {
   const messageElement = document.createElement('div')
   messageElement.setAttribute('class', type)
   const html = bigtext ? 
-    `<div class='largetext'>${bigtext}</div><div class='smalltext'>${smalltext}</div>` :
+    `<div class='largetext'><span>${bigtext}</span></div><div class='smalltext'>${smalltext}</div>` :
     `<div class='smalltext'>${smalltext}</div>`
   messageElement.innerHTML = html
   messageContainer.append(messageElement)
