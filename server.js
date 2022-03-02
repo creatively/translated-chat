@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
-const randomCharacters = require('./custom-modules/random-characters.js')
+const getRandomCharacters = require('./custom-modules/random-characters.js')
 const translate = require('./custom-modules/translate.js');
 
 
@@ -31,66 +31,65 @@ function getUserRooms(usersConnection) {
 
 // ------- INCOMING REQUESTS -------
 
-// all requests ***
+
+// Goes here if no roomname in url
 app.get('/', (req, res) => {
-c('--- /  1');
-c(rooms);
-  if(rooms === {}) {
-    a=a;
-  }
-  res.render('index', { rooms: rooms })
-})
+  c('--- /  1');
+  newRoomName = getRandomCharacters(5);
+  c(newRoomName);
+  res.render('room', { roomName: newRoomName })   // room9 needed?
+});
+
+app.get('./public/cartoon-blue-background.png', (req, res) => {
+  c('--- /  image');
+  newRoomName = getRandomCharacters(5);
+  c(newRoomName);
+  res.render('room', { roomName: newRoomName })   // room9 needed?
+});
 
 
-// requested from homepage to create new room
-app.post('/room', (req, res) => {
-c('--- 2  /room');
-  // if a known room is requested to "/room", then stay where you are
-  if (rooms[req.body.room] != null) {
-    return res.redirect('/')
-  }
 
-  // set up an empty room with 0 users and redirect to  "../roomname" 
-  rooms[req.body.room] = { users: {} }
-c('--- 2a  req.body.room = '+ req.body.room);
-  res.redirect(req.body.room)
-})
-
-
-// page requests
+// Goes straight here if a roomname in url
 app.get('/:room', (req, res) => {
-
-c('--- 3  /:room');
-
-  // send user to HOMEPAGE if just  localhost:3000/
-  if (rooms[req.params.room] == null) {
-    c('redirecting to "/"');
-    return res.redirect('/')
-  }
-
-  // send user to named-ROOM - either creating a new room, or joining an existing room
-  c('redirecting to "room" - '+req.params.room+'..-->');
+  c('--- /  2');
+  c(req.params.room);
   res.render('room', { roomName: req.params.room })
-})
+});
 
+// NEXT : 
+// >> roomName is correctly getting written out into 'room' page variable
+//    and links correctly to the room if put in url for new user
+//    Need to show it in a copyable url and/or in the 'room' page url
+// >>  Also need to test 2 X rooms + 2 X people
 
 
 // ------- SOCKET HANDLING -------
 
+
+const addUserToRoom = (roomName, userObject) => {
+  if (!rooms) rooms = {};
+  if (!rooms[roomName]) rooms[roomName] = {};
+  if (!rooms[roomName].users) rooms[roomName].users = {};
+
+  rooms[roomName].users[userObject.id] = userObject;
+}
+
+
 io.on('connection', usersConnection => {
 
   // New User
-  usersConnection.on('new-user', (room, name, language) => {
-    usersConnection.join(room);
+  usersConnection.on('new-user', (roomName, name, language) => {
 
-    rooms[room].users[usersConnection.id] = {
+    usersConnection.join(roomName);
+
+    addUserToRoom(roomName, {
       'id': usersConnection.id,
       'name': name,
       'language': language,
       'sender': false
-    }
+    });
       
-    usersConnection.to(room).broadcast.emit('user-connected', name)
+    usersConnection.to(roomName).broadcast.emit('user-connected', name)
   })
 
   // Disconnect
