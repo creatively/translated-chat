@@ -40,15 +40,6 @@ app.get('/', (req, res) => {
   res.render('room', { roomName: newRoomName })   // room9 needed?
 });
 
-app.get('./public/cartoon-blue-background.png', (req, res) => {
-  c('--- /  image');
-  newRoomName = getRandomCharacters(5);
-  c(newRoomName);
-  res.render('room', { roomName: newRoomName })   // room9 needed?
-});
-
-
-
 // Goes straight here if a roomname in url
 app.get('/:room', (req, res) => {
   c('--- /  2');
@@ -56,15 +47,8 @@ app.get('/:room', (req, res) => {
   res.render('room', { roomName: req.params.room })
 });
 
-// NEXT : 
-// >> roomName is correctly getting written out into 'room' page variable
-//    and links correctly to the room if put in url for new user
-//    Need to show it in a copyable url and/or in the 'room' page url
-// >>  Also need to test 2 X rooms + 2 X people
-
 
 // ------- SOCKET HANDLING -------
-
 
 const addUserToRoom = (roomName, userObject) => {
   if (!rooms) rooms = {};
@@ -155,20 +139,21 @@ ct(translations);
     }
 
     const roomUsersArray = getRoomUsersArray(room);
-    if (roomUsersArray.length > 0) {
-      const roomUsersArrayExcludingSender = roomUsersArray.filter(user => !user.sender);
-      const fromLanguage = roomUsersArray.filter(user => user.sender)[0].language;
-      const senderName = roomUsersArray.filter(user => user.sender)[0].name;
-      const toLanguages = Array.from([ ... new Set(roomUsersArrayExcludingSender.map(arr => arr['language'])) ]);
-      const toLangaugesExcludingSendersLanguage = toLanguages.filter(language => !fromLanguage);
-      const translationsNeeded = toLangaugesExcludingSendersLanguage.length > 0;
-    
-    //if (translationsNeeded) {
-      translate(message, fromLanguage, toLanguages, callback_getTranslations, roomUsersArrayExcludingSender, senderName);
-    }
-    //} else {
-    //  emitUntranslatedMessages(message, roomUsersArrayExcludingSender, senderName);
-    //}
+      if (roomUsersArray.length > 0) {
+        const roomUsersArrayExcludingSender = roomUsersArray.filter(user => !user.sender);
+        const fromLanguage = roomUsersArray.filter(user => user.sender)[0].language;
+        const senderName = roomUsersArray.filter(user => user.sender)[0].name;
+        const toLanguages = Array.from([ ... new Set(roomUsersArrayExcludingSender.map(arr => arr['language'])) ]);
+        const toLangaugesExcludingSendersLanguage = toLanguages.filter(language => !fromLanguage);
+        const translationsNeeded = toLangaugesExcludingSendersLanguage.length > 0;
+      
+      //if (translationsNeeded) {
+        translate(message, fromLanguage, toLanguages, callback_getTranslations, roomUsersArrayExcludingSender, senderName);
+      }
+      //} else {
+      //  emitUntranslatedMessages(message, roomUsersArrayExcludingSender, senderName);
+      //}
+
 
 
   })

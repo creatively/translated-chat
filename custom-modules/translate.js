@@ -1,9 +1,9 @@
 /*
 
 This "translate" method/module interacts with a remote translation API
-  it returns an array of translations, for the languages listed as "to" array parameter  eg. ...
+  it returns an array of translations, for the (up to 3) languages listed as "to" array parameter  eg. ...
 
-    (message, from,   to,           callback,             roomUsersArrayExcludingSender)
+    (message, from,   to (max 3),   callback,             roomUsersArrayExcludingSender)
     ('hi',    'en',   ['fr','de'],  myCallbackFunction,   objectToPassThroughInThisClosure)
   
     results in ....
@@ -19,11 +19,12 @@ module.exports = function translate(message, from, to, callback, roomUsersArrayE
 
   var options = {
     method: 'POST',
-    url: 'https://lecto-translation.p.rapidapi.com/v1/translate/text',
+
+    url: 'https://api.lecto.ai/v1/translate/text',
     headers: {
-      'content-type': 'application/json',
-      'x-rapidapi-host': 'lecto-translation.p.rapidapi.com',
-      'x-rapidapi-key': 'd90847b963msh23659dd5bda7ddfp1b0daajsna48f79be363b'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-API-Key': 'KTT1762-BC94FXA-MTMG38N-SMF9RWY'
     },
     data: {
       texts: [message],
@@ -43,6 +44,10 @@ module.exports = function translate(message, from, to, callback, roomUsersArrayE
       });
       callback(translations, roomUsersArrayExcludingSender, senderName);
   }).catch(function (error) {
-    console.error('--- translations failed ', error);
+    console.error('>>>>> translations failed <<<<\n', error);
+    console.log('--------- error code was ... -----------\n');
+    console.log(error.response.status + ' : '+ error.response.statusText+'\n');
+    console.log('--------- request data was ... ----------\n');
+    console.log(error.response.config.data+'\n');
   });
 }
