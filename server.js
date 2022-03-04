@@ -31,10 +31,10 @@ function getUserRooms(usersConnection) {
 
 function getRoomUsersArray(roomName, usersConnection) {
   let roomUsers = [];
-  
+
   for (var user in rooms[roomName]) {
       for (var id in rooms[roomName][user]) {
-        const isThisUserTheSender = usersConnection ? usersConnection.id === id : true;
+        const isThisUserTheSender = usersConnection.id === id
         var _user = {
           'id': id,
           'name': rooms[roomName][user][id].name,
@@ -47,14 +47,20 @@ function getRoomUsersArray(roomName, usersConnection) {
   return roomUsers;
 }
 
-const getRoomUsersNameAndLanguage = (roomName) => {
-  // removes ids & source from the array, so can be sent to client
-  return getRoomUsersArray(roomName).map(user => {
-    return {
-      'name': user.name,
-      'language': getLanguageDescriptionFromLanguageCode(user.language)
+const getRoomUsersNameAndLanguage = roomName => {
+  let roomUsers = [];
+  
+  for (var user in rooms[roomName]) {
+    for (var id in rooms[roomName][user]) {
+      const userDetail = rooms[roomName][user][id];
+      var _user = {
+        'name': userDetail.name,
+        'language': getLanguageDescriptionFromLanguageCode(userDetail.language)
+      };
+      roomUsers.push(_user);
     }
-  });
+  }
+  return roomUsers;
 }
 
 
@@ -101,22 +107,19 @@ io.on('connection', usersConnection => {
       ct(activeUsers);
 
     io.in(roomName).emit('user-connected', name, activeUsers)
-  })
-
+  })  
 
   // Disconnect
   usersConnection.on('disconnect', () => {
-
     getUserRooms(usersConnection).forEach(roomName => {
       const leaversName = rooms[roomName].users[usersConnection.id].name;
         const noOfUsers = Object.keys(rooms[roomName].users).length
-  c(noOfUsers);
         if (noOfUsers > 1) {
           delete rooms[roomName].users[usersConnection.id]
             c(`---- room :${roomName} - old user '${leaversName}' disconnected`);
           const latestActiveUsers = getRoomUsersNameAndLanguage(roomName);
-          c('latestActiveUsers are ...');
-          ct(latestActiveUsers);
+            c('latestActiveUsers are ...');
+            ct(latestActiveUsers);
           io.in(roomName).emit('user-disconnected', leaversName, latestActiveUsers)
         } else {
           delete rooms[roomName]
@@ -135,10 +138,9 @@ ct(translations);
       });
     }
 
-    
-    const roomUsersArray = getRoomUsersArray(room);
-    ct(roomUsersArray);
+    const roomUsersArray = getRoomUsersArray(room, usersConnection);
     const numberInRoom = roomUsersArray.length;
+    ct(roomUsersArray);
 
     const emitMessage = (userId, senderName, message) => {
       io.to(userId).emit(
@@ -149,7 +151,7 @@ ct(translations);
       )
     }
 
-    const emitInfoMessage = (userId, message) => {
+    const emitInfoMessageByUserId = (userId, message) => {
       io.to(userId).emit(
         'info-message', {
           message: message
@@ -157,37 +159,39 @@ ct(translations);
       )
     }
 
-    const emitErrorMessageToSender = (message, room) => {
-      const sender = getRoomUsersArray(room).filter(user => user.sender)[0];
-      emitInfoMessage(sender.id, sender.name, message)
+    const emitInfoMessageByRoom = (roomName, message) => {
+      io.in(roomName).emit(
+        'info-message', {
+          message: message
+        }
+      )
     }
 
     const emitUntranslatedMessage = (message, users, senderName) => {
       users.forEach(user => {
-        emitMessage(user.id, user.name, message);   // need to sendersName
+        emitMessage(user.id, senderName, message);
       })
     }
 
+    // Main 'send-chat-message' Code
     if (numberInRoom > 1) {
       const roomUsersArrayExcludingSender = roomUsersArray.filter(user => !user.sender);
-      const fromLanguages = roomUsersArray.filter(user => user.sender)[0].language;
+c(roomUsersArrayExcludingSender);
+      const fromLanguage = roomUsersArray.filter(user => user.sender)[0].language;
       const senderName = roomUsersArray.filter(user => user.sender)[0].name;
       const toLanguages = Array.from([ ... new Set(roomUsersArrayExcludingSender.map(arr => arr['language'])) ]);
-      const toLangaugesExcludingSendersLanguage = toLanguages.filter(language => !fromLanguages);
-      
+c(toLanguages);
+      const toLangaugesExcludingSendersLanguage = toLanguages.filter(language => fromLanguage);
 c(toLangaugesExcludingSendersLanguage);
       const translationsNeeded = toLangaugesExcludingSendersLanguage.length > 0;
       if (translationsNeeded) {
-        translate(message, fromLanguages, toLanguages, callback_getTranslations, roomUsersArrayExcludingSender, senderName);
+        translate(message, fromLanguage, toLanguages, callback_getTranslations, roomUsersArrayExcludingSender, senderName);
       } else {
         emitUntranslatedMessage(message, roomUsersArrayExcludingSender, senderName);
       }
     } else {
-      //emitErrorMessageToSender(`You're currently the only person in this chat`, room)
+      emitInfoMessageByRoom(room, `You're currently the only person in this chat`)
     }
-
   })
 
 })
-
-
