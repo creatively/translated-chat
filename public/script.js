@@ -1,12 +1,12 @@
 const socket = io('http://localhost:3000')
 const messageContainer = document.getElementById('message-container')
-const roomContainer = document.getElementById('room-container')
-const messageForm = document.getElementById('send-container')
 const messageInput = document.getElementById('message-input')
 
 const c = txt => console.log(txt);
+const ct = obj => console.table(obj);
 
 
+// Name & Language Modal Form
 const handleModalSubmit = e => {
   e.preventDefault();
   const name = document.querySelector('#input-name').value;
@@ -19,9 +19,9 @@ const nameAndLanguageForm = document.querySelector('.name-and-language-form') ||
 nameAndLanguageForm ? nameAndLanguageForm.addEventListener('submit', handleModalSubmit) : null;
 
 
+// Socket handling
 function joinNewUser(name, language) {
-c(name);
-c(language);
+
   // announce new user
   socket.emit('new-user', roomName, name, language);
 
@@ -29,33 +29,94 @@ c(language);
   document.getElementById('send-container').addEventListener('submit', e => {
     e.preventDefault()
     const message = messageInput.value
-    appendMessage(`me`, ``, `${message}`)
+    appendMessage({
+      textBubble: message
+    })
     socket.emit('send-chat-message', roomName, message)
     messageInput.value = ''
   })
 }
 
-// receive message
+// receive chat message
 socket.on('chat-message', data => {
-  appendMessage(`other`, `${data.name}`, `${data.message}`)
+  appendMessage({
+    textBubble: data.message,
+    textName: data.name
+  });
 })
 
-// connect/disconnect
-socket.on('user-connected', name => {
-  appendMessage(`other`, `${name} connected`, ``)
+// receive info message
+socket.on('info-message', data => {
+  c('--- info-message recived from server, data = ', data);
+  appendMessage({
+    textInfo: data.message
+  })
 })
 
-socket.on('user-disconnected', name => {
-  appendMessage(`other`, `${name} disconnected`, ``)
+// other user connected/disconnected
+socket.on('user-connected', (name, activeUsers) => {
+  appendMessage({
+    textInfo: `${name} connected in ${activeUsers[activeUsers.length - 1].language}`
+  })
 })
 
-// print message
-function appendMessage(type, smalltext, bigtext) {
+socket.on('user-disconnected', (name, activeUsers) => {
+  c(`${name} has disconnected, remaining users are :`);
+  ct(activeUsers);
+  activeUserNames = activeUsers.map(users => users.name)
+  html = `${activeUserNames.join(', ')} remaining`
+  appendMessage({
+    textInfo: `${name} disconnected<br/>${html}`
+  })
+})
+
+
+// print messages
+function appendMessage(textObject) {
+  /*  NB. textObject can contain either 1 or 2 properties 
+  {
+    textBubble: '' &&||
+    textName: '' ||
+    textInfo
+  }
+  */
+
+  const obj = getTextObjectWithTextTypeAdded(textObject)
   const messageElement = document.createElement('div')
-  messageElement.setAttribute('class', type)
-  const html = bigtext ? 
-    `<div class='largetext'><span>${bigtext}</span></div><div class='smalltext'>${smalltext}</div>` :
-    `<div class='smalltext'>${smalltext}</div>`
-  messageElement.innerHTML = html
+  messageElement.setAttribute('class', obj.type)
+  messageElement.innerHTML = getMessageInnerHTML(obj)
   messageContainer.append(messageElement)
 }
+
+  function getMessageInnerHTML(textObject) {
+    let html = ''
+    const obj = getTextObjectWithTextTypeAdded(textObject)
+
+    if (obj.textBubble) html += getMessagePartInnerHTML(obj.type, 'text-bubble', obj.textBubble)
+    if (obj.textName) html += getMessagePartInnerHTML(obj.type, 'text-name', obj.textName)
+    if (obj.textInfo) html += getMessagePartInnerHTML(obj.type, 'text-info', obj.textInfo)
+
+    return html
+  }
+
+    function getTextObjectWithTextTypeAdded(obj) { 
+      if (obj.textBubble && obj.textName) {
+        obj['type'] = 'other'
+      } else if (obj.textBubble) {
+        obj['type'] = 'me'
+        c(obj.type);
+      } else {
+        obj['type'] = 'info'
+      }
+      return obj
+    }
+
+      function getMessagePartInnerHTML(messageType, classType, text) {
+        return `<div class='${messageType}'>
+                  <div class='${classType}'>
+                    <span>${text}</span>
+                  </div>
+                </div>`
+      }
+
+

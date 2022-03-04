@@ -47,16 +47,16 @@
         margin-bottom: 5px;
       }
 
-        .largetext {
+        .text-bubble {
           margin-bottom: 0;
         }
-          .me .largetext {
+          .me .text-bubble {
             margin-left: 11%;
           }
-          .other .largetext {
+          .other .text-bubble {
             margin-right: 10%;
           }
-          .largetext span {
+          .text-bubble span {
             position: relative;
             background: #fff;
             color: #000;
@@ -71,7 +71,7 @@
             display: inline-block;
             padding: 6px 12px;
           }
-          .largetext span:after {
+          .text-bubble span:after {
             content: '';
             position: absolute;
             display: block;
@@ -85,44 +85,53 @@
             left: 20px;
             margin-left: -5px;
           }
-          .me .largetext span:after {
+          .me .text-bubble span:after {
             left: auto;
             right: 20px;
           }
 
-        .smalltext {
+        .text-name {
           position: relative;
-          left: 34px;
+          left: 20px;
         }
 
         .me {
           text-align: right;
         }
 
-        .me .smalltext {
+        .me .text-name {
           line-height: 1px;
         }
 
-        .me .largetext {
+        .me .text-bubble {
 
         }
 
-        .other .smalltext {
-          font-family: arial;
+        .other .text-name {
           font-size: 15px;
-          color: black;
+          color: #20647a;
         }
 
-        .other .largetext {
+        .text-info {
+          margin-left: -10px;
+          width: 100%;
+          margin-right: 20px;
+          font-size: 15px;
+          color: white;
+          background-color: #20647a;
+          padding: 9px 20px !important;
+        }
+
+        .other .text-bubble {
           
         }
 
-        #message-container .largetext {
+        #message-container .text-bubble {
           color: black;
           padding-bottom: 0;
         }
 
-        #message-container .smalltext {
+        #message-container .text-name {
           padding-top: 0;
         }
 

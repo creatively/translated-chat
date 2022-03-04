@@ -4,7 +4,8 @@ const app = express()
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
 const getRandomCharacters = require('./custom-modules/random-characters.js')
-const translate = require('./custom-modules/translate.js');
+const translate = require('./custom-modules/translate.js')
+const getLanguageDescriptionFromLanguageCode = require('./custom-modules/getLanguageDescriptionFromLanguageCode.js')
 
 
 app.set('views', './views')
@@ -28,22 +29,46 @@ function getUserRooms(usersConnection) {
   }, [])
 }
 
+function getRoomUsersArray(roomName, usersConnection) {
+  let roomUsers = [];
+  
+  for (var user in rooms[roomName]) {
+      for (var id in rooms[roomName][user]) {
+        const isThisUserTheSender = usersConnection ? usersConnection.id === id : true;
+        var _user = {
+          'id': id,
+          'name': rooms[roomName][user][id].name,
+          'language': rooms[roomName][user][id].language,
+          'sender': isThisUserTheSender
+        };
+        roomUsers.push(_user);
+      }
+  }
+  return roomUsers;
+}
+
+const getRoomUsersNameAndLanguage = (roomName) => {
+  // removes ids & source from the array, so can be sent to client
+  return getRoomUsersArray(roomName).map(user => {
+    return {
+      'name': user.name,
+      'language': getLanguageDescriptionFromLanguageCode(user.language)
+    }
+  });
+}
+
 
 // ------- INCOMING REQUESTS -------
 
-
 // Goes here if no roomname in url
 app.get('/', (req, res) => {
-  c('--- /  1');
   newRoomName = getRandomCharacters(5);
-  c(newRoomName);
-  res.render('room', { roomName: newRoomName })   // room9 needed?
+  c(`>>> room :${newRoomName} created`);
+  res.redirect('/'+ newRoomName);
 });
 
 // Goes straight here if a roomname in url
 app.get('/:room', (req, res) => {
-  c('--- /  2');
-  c(req.params.room);
   res.render('room', { roomName: req.params.room })
 });
 
@@ -63,53 +88,45 @@ io.on('connection', usersConnection => {
 
   // New User
   usersConnection.on('new-user', (roomName, name, language) => {
-
     usersConnection.join(roomName);
-
     addUserToRoom(roomName, {
       'id': usersConnection.id,
       'name': name,
       'language': language,
       'sender': false
     });
-      
-    usersConnection.to(roomName).broadcast.emit('user-connected', name)
+
+    const activeUsers = getRoomUsersNameAndLanguage(roomName);
+      c(`---- room :${roomName} - new user '${name}' added`);
+      ct(activeUsers);
+
+    io.in(roomName).emit('user-connected', name, activeUsers)
   })
+
 
   // Disconnect
   usersConnection.on('disconnect', () => {
-    getUserRooms(usersConnection).forEach(room => {
-      usersConnection.to(room).broadcast
-        .emit(
-          'user-disconnected', 
-          rooms[room].users[usersConnection.id]
-        )
-      delete rooms[room].users[usersConnection.id]
+
+    getUserRooms(usersConnection).forEach(roomName => {
+      const leaversName = rooms[roomName].users[usersConnection.id].name;
+        const noOfUsers = Object.keys(rooms[roomName].users).length
+  c(noOfUsers);
+        if (noOfUsers > 1) {
+          delete rooms[roomName].users[usersConnection.id]
+            c(`---- room :${roomName} - old user '${leaversName}' disconnected`);
+          const latestActiveUsers = getRoomUsersNameAndLanguage(roomName);
+          c('latestActiveUsers are ...');
+          ct(latestActiveUsers);
+          io.in(roomName).emit('user-disconnected', leaversName, latestActiveUsers)
+        } else {
+          delete rooms[roomName]
+          c(`---- room :${roomName} closed`);
+        }
     })
   })
 
   // Translate & Emit message
   usersConnection.on('send-chat-message', (room, message) => {
-
-    // Utils
-    const sendersId = usersConnection.id;
-
-    const getRoomUsersArray = roomName => {
-      let roomUsers = [];
-
-      for (var user in rooms[roomName]) {
-          for (var id in rooms[roomName][user]) {
-            var _user = {
-              'id': id,
-              'name': rooms[room][user][id].name,
-              'language': rooms[room][user][id].language,
-              'sender': sendersId === id
-            };
-            roomUsers.push(_user);
-          }
-      }
-      return roomUsers;
-    }
 
     const callback_getTranslations = (translations, roomUsersArray, senderName) => {
 ct(translations);
@@ -117,6 +134,11 @@ ct(translations);
         emitMessage(user.id, senderName, translations[user.language]);
       });
     }
+
+    
+    const roomUsersArray = getRoomUsersArray(room);
+    ct(roomUsersArray);
+    const numberInRoom = roomUsersArray.length;
 
     const emitMessage = (userId, senderName, message) => {
       io.to(userId).emit(
@@ -127,34 +149,42 @@ ct(translations);
       )
     }
 
-    const emitErrorMessageToSender = (message, room) => {
-      const sender = getRoomUsersArray(room).filter(user => user.sender);  // check that user.sender works ok here
-      emitMessage(sender.id, user.name, message);
+    const emitInfoMessage = (userId, message) => {
+      io.to(userId).emit(
+        'info-message', {
+          message: message
+        }
+      )
     }
 
-    const emitUntranslatedMessages = (message, users, senderName) => {
+    const emitErrorMessageToSender = (message, room) => {
+      const sender = getRoomUsersArray(room).filter(user => user.sender)[0];
+      emitInfoMessage(sender.id, sender.name, message)
+    }
+
+    const emitUntranslatedMessage = (message, users, senderName) => {
       users.forEach(user => {
         emitMessage(user.id, user.name, message);   // need to sendersName
       })
     }
 
-    const roomUsersArray = getRoomUsersArray(room);
-      if (roomUsersArray.length > 0) {
-        const roomUsersArrayExcludingSender = roomUsersArray.filter(user => !user.sender);
-        const fromLanguage = roomUsersArray.filter(user => user.sender)[0].language;
-        const senderName = roomUsersArray.filter(user => user.sender)[0].name;
-        const toLanguages = Array.from([ ... new Set(roomUsersArrayExcludingSender.map(arr => arr['language'])) ]);
-        const toLangaugesExcludingSendersLanguage = toLanguages.filter(language => !fromLanguage);
-        const translationsNeeded = toLangaugesExcludingSendersLanguage.length > 0;
+    if (numberInRoom > 1) {
+      const roomUsersArrayExcludingSender = roomUsersArray.filter(user => !user.sender);
+      const fromLanguages = roomUsersArray.filter(user => user.sender)[0].language;
+      const senderName = roomUsersArray.filter(user => user.sender)[0].name;
+      const toLanguages = Array.from([ ... new Set(roomUsersArrayExcludingSender.map(arr => arr['language'])) ]);
+      const toLangaugesExcludingSendersLanguage = toLanguages.filter(language => !fromLanguages);
       
-      //if (translationsNeeded) {
-        translate(message, fromLanguage, toLanguages, callback_getTranslations, roomUsersArrayExcludingSender, senderName);
+c(toLangaugesExcludingSendersLanguage);
+      const translationsNeeded = toLangaugesExcludingSendersLanguage.length > 0;
+      if (translationsNeeded) {
+        translate(message, fromLanguages, toLanguages, callback_getTranslations, roomUsersArrayExcludingSender, senderName);
+      } else {
+        emitUntranslatedMessage(message, roomUsersArrayExcludingSender, senderName);
       }
-      //} else {
-      //  emitUntranslatedMessages(message, roomUsersArrayExcludingSender, senderName);
-      //}
-
-
+    } else {
+      //emitErrorMessageToSender(`You're currently the only person in this chat`, room)
+    }
 
   })
 
