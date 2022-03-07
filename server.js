@@ -20,10 +20,6 @@ const c = txt => console.log(txt);
 const ct = obj => console.table(obj);
 
 // ------- ROOMS INIT --------
-getLocationAndWeather(locationAndWeather => {
-  console.table(locationAndWeather);
-});
-
 const rooms = { }
 
 function getUserRooms(usersConnection) {
@@ -107,11 +103,17 @@ io.on('connection', usersConnection => {
     });
 
     const activeUsers = getRoomUsersNameAndLanguage(roomName);
-      c(`---- room :${roomName} - new user '${name}' added`);
-      ct(activeUsers);
-
-    io.in(roomName).emit('user-connected', name, activeUsers)
-  })  
+    
+    getLocationAndWeather(newUsersLocationAndWeather => {
+      const newUserNameAndLanguage = {
+        name: name,
+        language: getLanguageDescriptionFromLanguageCode(language)
+      }
+      newUsersDetails = { ...newUserNameAndLanguage, ...newUsersLocationAndWeather}
+      ct(newUsersDetails);
+      io.in(roomName).emit('user-connected', newUsersDetails, activeUsers)
+    })
+  })
 
   // Disconnect
   usersConnection.on('disconnect', () => {
@@ -171,6 +173,14 @@ ct(translations);
       )
     }
 
+    const emitInfoMessageByRoomOnlyUser = (roomName, message) => {
+      io.in(roomName).emit(
+        'info-message-only-user', {
+          message: message
+        }
+      )
+    }
+
     const emitUntranslatedMessage = (message, users, senderName) => {
       users.forEach(user => {
         emitMessage(user.id, senderName, message);
@@ -180,13 +190,10 @@ ct(translations);
     // Main 'send-chat-message' Code
     if (numberInRoom > 1) {
       const roomUsersArrayExcludingSender = roomUsersArray.filter(user => !user.sender);
-c(roomUsersArrayExcludingSender);
       const fromLanguage = roomUsersArray.filter(user => user.sender)[0].language;
       const senderName = roomUsersArray.filter(user => user.sender)[0].name;
       const toLanguages = Array.from([ ... new Set(roomUsersArrayExcludingSender.map(arr => arr['language'])) ]);
-c(toLanguages);
       const toLangaugesExcludingSendersLanguage = toLanguages.filter(language => fromLanguage);
-c(toLangaugesExcludingSendersLanguage);
       const translationsNeeded = toLangaugesExcludingSendersLanguage.length > 0;
       if (translationsNeeded) {
         translate(message, fromLanguage, toLanguages, callback_getTranslations, roomUsersArrayExcludingSender, senderName);
@@ -194,7 +201,7 @@ c(toLangaugesExcludingSendersLanguage);
         emitUntranslatedMessage(message, roomUsersArrayExcludingSender, senderName);
       }
     } else {
-      emitInfoMessageByRoom(room, `You're currently the only person in this chat`)
+      emitInfoMessageByRoomOnlyUser(room, `You're currently the only person in this chat`)
     }
   })
 

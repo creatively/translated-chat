@@ -15,6 +15,28 @@ const handleModalSubmit = e => {
   joinNewUser(name, language);
 }
 
+const getHTMLForNewUserAnnouncement = newUserDetails => {
+  const nameAndLanguageHTML = 
+    `${newUserDetails.name} just connected in ${newUserDetails.language}`
+
+  const locationHTML = (newUserDetails.locationApiWorkedOK) ?
+    ` from 
+       <img class="icon-flag" src="${newUserDetails.countryFlag}" height="15" width="20" />
+      ${newUserDetails.country}` : ``
+
+  const weatherHTML = (newUserDetails.weatherApiWorkedOK) ?
+     ` where it's now
+      <img class="icon-weather" src="${newUserDetails.iconUrl}" />
+      ${newUserDetails.temp}c
+       in ${newUserDetails.city}` : ``
+
+  return nameAndLanguageHTML + locationHTML + weatherHTML
+}
+
+const updateActiveUsersDisplay = activeUsers => {
+  console.table(activeUsers)
+}
+
 const nameAndLanguageForm = document.querySelector('.name-and-language-form') || null;
 nameAndLanguageForm ? nameAndLanguageForm.addEventListener('submit', handleModalSubmit) : null;
 
@@ -47,24 +69,37 @@ socket.on('chat-message', data => {
 
 // receive info message
 socket.on('info-message', data => {
-  c('--- info-message recived from server, data = ', data);
   appendMessage({
     textInfo: data.message
   })
 })
 
-// other user connected/disconnected
-socket.on('user-connected', (name, activeUsers) => {
+socket.on('info-message-only-user', data => {
+  console.table(data);
   appendMessage({
-    textInfo: `${name} connected in ${activeUsers[activeUsers.length - 1].language}`
+    textInfo: 
+      `${data.message}, so send this url<br>
+      <span class='url'>${location.href}</span><br>
+      to invite others`
+  })
+})
+
+
+// other user connected/disconnected
+socket.on('user-connected', (newUserDetails, activeUsers) => {
+
+  updateActiveUsersDisplay(activeUsers)
+
+  appendMessage({
+    textInfo: 
+    getHTMLForNewUserAnnouncement(newUserDetails)
   })
 })
 
 socket.on('user-disconnected', (name, activeUsers) => {
-  c(`${name} has disconnected, remaining users are :`);
-  ct(activeUsers);
-  activeUserNames = activeUsers.map(users => users.name)
-  html = `${activeUserNames.join(', ')} remaining`
+
+  updateActiveUsersDisplay(activeUsers)
+  // activeUserNames = activeUsers.map(users => users.name)
   appendMessage({
     textInfo: `${name} disconnected<br/>${html}`
   })
