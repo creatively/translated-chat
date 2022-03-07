@@ -12,7 +12,9 @@
     "axios": "^0.26.0",
     "ejs": "^2.6.1",
     "express": "^4.17.1",
+    "ipapi": "^4.0.0",
     "manakin": "^0.5.2",
+    "node-fetch": "^3.2.1",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {

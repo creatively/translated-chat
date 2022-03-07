@@ -6,7 +6,7 @@ const io = require('socket.io')(server)
 const getRandomCharacters = require('./custom-modules/random-characters.js')
 const translate = require('./custom-modules/translate.js')
 const getLanguageDescriptionFromLanguageCode = require('./custom-modules/getLanguageDescriptionFromLanguageCode.js')
-
+const getLocationAndWeather = require('./custom-modules/getLocationAndWeather.js')
 
 app.set('views', './views')
 app.set('view engine', 'ejs')
@@ -19,6 +19,9 @@ const ct = obj => console.table(obj);
 
 
 // ------- ROOMS INIT --------
+
+getLocationAndWeather((location) => console.log('>>>>> '+location+'<<<<<'))
+
 
 const rooms = { }
 
