@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
+const dotenv = require('dotenv')
 const getRandomCharacters = require('./custom-modules/random-characters.js')
 const translate = require('./custom-modules/translate.js')
 const getLanguageDescriptionFromLanguageCode = require('./custom-modules/getLanguageDescriptionFromLanguageCode.js')
@@ -12,16 +13,16 @@ app.set('views', './views')
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
+dotenv.config()
 server.listen(3000)
 
 const c = txt => console.log(txt);
 const ct = obj => console.table(obj);
 
-
 // ------- ROOMS INIT --------
-
-getLocationAndWeather((location) => console.log('>>>>> '+location+'<<<<<'))
-
+getLocationAndWeather(locationAndWeather => {
+  console.table(locationAndWeather);
+});
 
 const rooms = { }
 
