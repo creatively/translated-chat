@@ -6,7 +6,7 @@ const io = require('socket.io')(server)
 const dotenv = require('dotenv')
 const getRandomCharacters = require('./custom-modules/random-characters.js')
 const translate = require('./custom-modules/translate.js')
-const getLanguageDescriptionFromLanguageCode = require('./custom-modules/getLanguageDescriptionFromLanguageCode.js')
+const { getSupportedLanguagesObject , getLanguageDescriptionFromLanguageCode } = require('./custom-modules/languages.js')
 const getLocationAndWeather = require('./custom-modules/getLocationAndWeather.js')
 
 app.set('views', './views')
@@ -18,6 +18,7 @@ server.listen(3000)
 
 const c = txt => console.log(txt);
 const ct = obj => console.table(obj);
+
 
 // ------- ROOMS INIT --------
 const rooms = { }
@@ -75,7 +76,10 @@ app.get('/', (req, res) => {
 
 // Goes straight here if a roomname in url
 app.get('/:room', (req, res) => {
-  res.render('room', { roomName: req.params.room })
+  res.render('room', { 
+    roomName: req.params.room,
+    supportedLanguages: JSON.stringify(getSupportedLanguagesObject())
+  })
 });
 
 
@@ -94,6 +98,9 @@ io.on('connection', usersConnection => {
 
   // New User
   usersConnection.on('new-user', (roomName, name, language) => {
+    // <----  BUG? : Check that multiple joins can't happem if the user is already in the room
+    //        as multiple joins can be done on the client, and then 'other' messages don't get through
+    //        presumably as multiple connectionIds for a receiving user
     usersConnection.join(roomName);
     addUserToRoom(roomName, {
       'id': usersConnection.id,
@@ -138,7 +145,6 @@ io.on('connection', usersConnection => {
   usersConnection.on('send-chat-message', (room, message) => {
 
     const callback_getTranslations = (translations, roomUsersArray, senderName) => {
-ct(translations);
       roomUsersArray.forEach(user => {
         emitMessage(user.id, senderName, translations[user.language]);
       });

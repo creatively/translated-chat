@@ -12,12 +12,14 @@ const handleModalSubmit = e => {
   const name = document.querySelector('#input-name').value;
   const language = document.querySelector('#select-language').value;
   document.querySelector('.modal-background').style.display = 'none';
+  document.querySelector('.card').style.display = 'none';
+  
   joinNewUser(name, language);
 }
 
 const getHTMLForNewUserAnnouncement = newUserDetails => {
   const nameAndLanguageHTML = 
-    `${newUserDetails.name} just connected in ${newUserDetails.language}`
+    `<i class="person-name">${newUserDetails.name}</i> just connected in ${newUserDetails.language}`
 
   const locationHTML = (newUserDetails.locationApiWorkedOK) ?
     ` from 
@@ -26,15 +28,22 @@ const getHTMLForNewUserAnnouncement = newUserDetails => {
 
   const weatherHTML = (newUserDetails.weatherApiWorkedOK) ?
      ` where it's now
+      ${newUserDetails.localtime} and
       <img class="icon-weather" src="${newUserDetails.iconUrl}" />
-      ${newUserDetails.temp}c
+      ${newUserDetails.temp}'C
        in ${newUserDetails.city}` : ``
 
   return nameAndLanguageHTML + locationHTML + weatherHTML
 }
 
-const updateActiveUsersDisplay = activeUsers => {
-  console.table(activeUsers)
+const getHTMLForCurrentsUsersOnline = activeUsers => {
+  let html = `<div class="text-subinfo">`
+    activeUsers.forEach(user => {
+      html += `<span>${user.name}</span>`
+    })
+  html += `</div>`
+
+  return html
 }
 
 const nameAndLanguageForm = document.querySelector('.name-and-language-form') || null;
@@ -75,47 +84,48 @@ socket.on('info-message', data => {
 })
 
 socket.on('info-message-only-user', data => {
-  console.table(data);
   appendMessage({
     textInfo: 
-      `${data.message}, so send this url<br>
-      <span class='url'>${location.href}</span><br>
-      to invite others`
+      `${data.message}, - send this url to invite others<br>
+      ${location.host + location.pathname}`
   })
 })
 
-
-// other user connected/disconnected
 socket.on('user-connected', (newUserDetails, activeUsers) => {
-
-  updateActiveUsersDisplay(activeUsers)
-
   appendMessage({
-    textInfo: 
-    getHTMLForNewUserAnnouncement(newUserDetails)
+    textInfo: getHTMLForNewUserAnnouncement(newUserDetails)
   })
+  appendActiveUsers(activeUsers)
 })
 
 socket.on('user-disconnected', (name, activeUsers) => {
-
-  updateActiveUsersDisplay(activeUsers)
-  // activeUserNames = activeUsers.map(users => users.name)
   appendMessage({
-    textInfo: `${name} disconnected<br/>${html}`
+    textInfo: `${name} disconnected<br>${html}` // <--- is ${html} needed
   })
+  appendActiveUsers(activeUsers)
 })
 
-
-// print messages
-function appendMessage(textObject) {
-  /*  NB. textObject can contain either 1 or 2 properties 
-  {
-    textBubble: '' &&||
-    textName: '' ||
-    textInfo
+// Initialise starting form
+const populateLanguagesList = () => {
+  const dropdownSelectLanguage = document.getElementById('select-language')
+  for (languageCode in supportedLanguages) {
+    let newOption = new Option(supportedLanguages[languageCode], languageCode);
+    dropdownSelectLanguage.add(newOption, undefined);
   }
-  */
+}
 
+document.body.onload = () => {
+  populateLanguagesList()
+  document.getElementById('select-language').value = navigator.language.substring(0,2)
+  document.getElementById('input-name').focus()
+}
+
+
+// Display message in the messages container
+function appendMessage(textObject) {
+
+  // 'textObject' can contain properties including [textBubble, textName, textInfo, textSubInfo]
+  // they determine how their text values are to be displayed
   const obj = getTextObjectWithTextTypeAdded(textObject)
   const messageElement = document.createElement('div')
   messageElement.setAttribute('class', obj.type)
@@ -135,11 +145,11 @@ function appendMessage(textObject) {
   }
 
     function getTextObjectWithTextTypeAdded(obj) { 
+      // "type" indicates who the message has come from: [me, other, info]
       if (obj.textBubble && obj.textName) {
         obj['type'] = 'other'
       } else if (obj.textBubble) {
         obj['type'] = 'me'
-        c(obj.type);
       } else {
         obj['type'] = 'info'
       }
@@ -154,4 +164,8 @@ function appendMessage(textObject) {
                 </div>`
       }
 
-
+  function appendActiveUsers(activeUsers) {
+    const activeUsersElement = document.createElement('div')
+    activeUsersElement.innerHTML = getHTMLForCurrentsUsersOnline(activeUsers)
+    messageContainer.append(activeUsersElement)
+  }

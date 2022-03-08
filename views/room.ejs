@@ -4,15 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Chat App</title>
+  <title>translation.chat</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Delius">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+ 
   <script>
     const roomName = "<%= roomName %>"
+    const supportedLanguagesString =<%-JSON.stringify(supportedLanguages)%>
+    const supportedLanguages = JSON.parse(supportedLanguagesString)
   </script>
   <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
   <script defer src="script.js"></script>
   <style>
     body {
-      font-family: 'Trebuchet MS';
+      font-family: 'Roboto', serif;
       padding: 0;
       margin: 0;
       background-color: #03e3fc;
@@ -56,17 +61,21 @@
           .other .text-bubble {
             margin-right: 10%;
           }
+          .other .text-name {
+            margin-top: 3px;
+          }
           .text-bubble span {
             position: relative;
             background: #fff;
             color: #000;
-            font-family: Arial;
+            font-family: 'Delius', sans-serif;
+            font-weight: 600;
             font-size: 20px;
             line-height: 28px;
             box-shadow: 7px 7px 14px -3px #555;
             text-align: center;
-            border-radius: 10px;
-            padding: 3px 10px;
+            border-radius: 16px;
+            padding: 1px 10px;
             border: 2px solid black;
             display: inline-block;
             padding: 6px 12px;
@@ -103,10 +112,6 @@
           line-height: 1px;
         }
 
-        .me .text-bubble {
-
-        }
-
         .other .text-name {
           font-size: 15px;
           color: #20647a;
@@ -117,44 +122,56 @@
           width: 100%;
           margin-right: 20px;
           line-height:26px;
-          font-size: 15px;
+          font-size: 16px;
           color: white;
           background-color: #20647a;
           padding: 9px 20px !important;
+          text-align: center;
         }
+
           .icon-flag {
             height: 14px;
             width: 24px;
-            margin-left: 3px;
-            margin-bottom: -2px;
+            margin: 0 4px -2px 5px;
           }
 
           .icon-weather {
             height: 30px;
             width: 36px;
-            margin-left: -1px;
-            margin-bottom: -10px;
+            margin: 0 -6px -10px;
+          }
+
+          i.person-name {
+            font-style: normal;
+            color: aqua;
+            margin-right: 2px;
           }
 
           .url {
             padding-left: 18px;
           }
 
-        .other .text-bubble {
-          
+        .text-subinfo {
+          height: 14px;
+          background: aqua;
+          color: #000;
+          font-size: 12px;
+          margin: -5px 20px 6px -10px;
+          width: 100%;
+          padding: 2px 20px !important;
+          text-align: center;
+          box-shadow: 2px 2px 12px 1px #555;
         }
+
+          .text-subinfo span {
+            margin-right: 22px;
+          }
 
         #message-container .text-bubble {
           color: black;
           padding-bottom: 0;
         }
 
-        #message-container .text-name {
-          padding-top: 0;
-        }
-
-
-    /* ---------------------------------------------- */
 
 .modal-background {
   z-index:2;
@@ -250,6 +267,11 @@
       <h3 class="text-center mb-4 visuallyhidden">Please provide your name and language</h3>
       <form class="name-and-language-form">
 
+        <div class="welcome">
+          Welcome to translated.chat<br>
+          The very simple chat webpage supporting up to 4 different languages in any group session
+        </div><br>
+
         <label for="input-name">your name</label><br>
         <input
           id="input-name"
@@ -261,13 +283,7 @@
 
         <label for="select-language">your language</label><br>
         <select id="select-language" name="language">
-          <option value="en" label="English" selected>English</option>
-          <option value="sw" label="Swahili">Swahili</option>
-          <option value="es" label="Spanish">Spanish</option>
-          <option value="cy" label="Welsh">Welsh</option>
-          <option value="mg" label="Malagasy">Malagasy</option>
-          <option value="fr" label="French">French</option>
-          <option value="hi" label="Hindi">Hindi</option>
+          <option value="en" label="English">English</option>
         </select>
 
         <div class="row justify-content-end">
@@ -287,10 +303,6 @@
   </form>
 
   <div class="modal-background"></div>
-
-  <script>
-    document.getElementById('select-language').value = navigator.language.substring(0,3);
-  </script>
 
 </body>
 </html>
