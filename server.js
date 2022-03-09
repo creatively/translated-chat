@@ -94,13 +94,10 @@ const addUserToRoom = (roomName, userObject) => {
 }
 
 
-io.on('connection', usersConnection => {
+io.on('connection', (usersConnection) => {
 
   // New User
   usersConnection.on('new-user', (roomName, name, language) => {
-    // <----  BUG? : Check that multiple joins can't happem if the user is already in the room
-    //        as multiple joins can be done on the client, and then 'other' messages don't get through
-    //        presumably as multiple connectionIds for a receiving user
     usersConnection.join(roomName);
     addUserToRoom(roomName, {
       'id': usersConnection.id,
@@ -117,7 +114,6 @@ io.on('connection', usersConnection => {
         language: getLanguageDescriptionFromLanguageCode(language)
       }
       newUsersDetails = { ...newUserNameAndLanguage, ...newUsersLocationAndWeather}
-      ct(newUsersDetails);
       io.in(roomName).emit('user-connected', newUsersDetails, activeUsers)
     })
   })
@@ -129,14 +125,11 @@ io.on('connection', usersConnection => {
         const noOfUsers = Object.keys(rooms[roomName].users).length
         if (noOfUsers > 1) {
           delete rooms[roomName].users[usersConnection.id]
-            c(`---- room :${roomName} - old user '${leaversName}' disconnected`);
           const latestActiveUsers = getRoomUsersNameAndLanguage(roomName);
-            c('latestActiveUsers are ...');
-            ct(latestActiveUsers);
           io.in(roomName).emit('user-disconnected', leaversName, latestActiveUsers)
         } else {
           delete rooms[roomName]
-          c(`---- room :${roomName} closed`);
+          c(`---- room :${roomName} closed <<<<`);
         }
     })
   })
@@ -152,7 +145,6 @@ io.on('connection', usersConnection => {
 
     const roomUsersArray = getRoomUsersArray(room, usersConnection);
     const numberInRoom = roomUsersArray.length;
-    ct(roomUsersArray);
 
     const emitMessage = (userId, senderName, message) => {
       io.to(userId).emit(

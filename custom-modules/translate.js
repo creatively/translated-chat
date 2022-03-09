@@ -44,10 +44,7 @@ module.exports = function translate(message, from, to, callback, roomUsersArrayE
       });
       callback(translations, roomUsersArrayExcludingSender, senderName);
   }).catch(function (error) {
-    console.error('>>>>> translations failed <<<<\n', error);
-    console.log('--------- error code was ... -----------\n');
-    console.log(error.response.status + ' : '+ error.response.statusText+'\n');
-    console.log('--------- request data was ... ----------\n');
+    console.error('>>>>> translations failed for ... <<<<\n', error);
     console.log(error.response.config.data+'\n');
   });
 }

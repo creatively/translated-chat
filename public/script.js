@@ -99,8 +99,10 @@ socket.on('user-connected', (newUserDetails, activeUsers) => {
 })
 
 socket.on('user-disconnected', (name, activeUsers) => {
+console.log(':user-disconnected');
+console.table(activeUsers);
   appendMessage({
-    textInfo: `${name} disconnected<br>${html}` // <--- is ${html} needed
+    textInfo: `${name} disconnected`
   })
   appendActiveUsers(activeUsers)
 })

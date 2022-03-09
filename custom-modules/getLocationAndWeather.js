@@ -4,7 +4,6 @@ module.exports = function getLocationAndWeather(callback) {
     let callbackData = {};
 
     // Utils
-    const c = function(txt) {console.log(txt)} 
     const convertLocaltimeToHoursOnly = dateTime => {
         const length = dateTime.length
         const time = dateTime.substring(length - 5, length);
@@ -28,7 +27,6 @@ module.exports = function getLocationAndWeather(callback) {
             
             // Get Weather data
             const coordinates = `${callbackData['latitude']},${callbackData['longitude']}`
-            console.log('---> '+process.env.KEY_API_WEATHERAPI);
             axios.request({url: `https://api.weatherapi.com/v1/current.json?key=${process.env.KEY_API_WEATHERAPI}&q=${coordinates}`})
                 .then(function (response) {
                     const data = response.data;
@@ -36,7 +34,7 @@ module.exports = function getLocationAndWeather(callback) {
                     callbackData['iconUrl'] = 'https:'+data.current.condition.icon
                     callbackData['localtime'] = convertLocaltimeToHoursOnly(data.location.localtime);
                     callbackData['weatherApiWorkedOK'] = true
-                }).catch(function (error) {
+                }).catch(function (e) {
                     console.error('>>>>> Weather API call failed <<<<');
                     callbackData['weatherApiWorkedOK'] = false
                 }).then(() => {
