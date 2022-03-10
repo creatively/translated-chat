@@ -1,0 +1,304 @@
+body {
+    font-family: Arial, serif;
+    letter-spacing: 0.7px;
+    padding: 0;
+    margin: 0;
+    background-color: #03e3fc;
+    background: url('/images/cartoon-blue-background.jpg') no-repeat center fixed;
+    background-size: cover;
+  }
+
+  .visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+
+  /* ------ Messages Area ----- */
+
+  #message-container {
+    position: fixed;
+    bottom: 97px;
+    padding: 0px 10px;
+    font-size: 20px;
+    width: calc(100% - 20px);
+  }
+
+    #message-container div {
+      padding: 0;
+      margin-bottom: 10px;
+    }
+
+      .text-bubble {
+        margin-bottom: 0;
+      }
+        .me .text-bubble {
+          margin-left: 11%;
+        }
+        .other .text-bubble {
+          margin-right: 10%;
+        }
+        .other .text-name {
+          margin-top: 3px;
+        }
+        .text-bubble span {
+          position: relative;
+          background: #fff;
+          color: #000;
+          font-family: 'Delius', sans-serif;
+          font-weight: 600;
+          font-size: 20px;
+          line-height: 28px;
+          box-shadow: 7px 7px 14px -3px #555;
+          text-align: center;
+          border-radius: 16px;
+          padding: 1px 10px;
+          border: 2px solid black;
+          display: inline-block;
+          padding: 6px 12px;
+          margin-bottom: 6px;
+          opacity: 0;
+          animation: fader 1s linear;
+          animation-fill-mode: forwards;
+        }
+        .text-bubble span:after {
+          content: '';
+          position: absolute;
+          display: block;
+          width: 0;
+          z-index: 1;
+          border-style: solid;
+          border-width: 0 10px 9px 0;
+          border-color: transparent #fff transparent transparent;
+          box-shadow: 5px 1px 1px -1px #555;
+          bottom: -9px;
+          left: 20px;
+          margin-left: -5px;
+        }
+
+        .me .text-bubble span:after {
+          left: auto;
+          right: 20px;
+        }
+
+        @keyframes fader {
+          50% {
+            opacity: 0.1;
+          }
+          90% {
+            opacity: 0.9;
+            box-shadow: 0px 0px 0px #555;
+          }
+          100% {
+            opacity: 1;
+            box-shadow: 7px 7px 14px -3px #555;
+          }
+        }
+
+      .text-name {
+        position: relative;
+        left: 20px;
+      }
+
+      .me {
+        text-align: right;
+      }
+
+      .me .text-name {
+        line-height: 1px;
+      }
+
+      .other .text-name {
+        font-size: 15px;
+        color: #20647a;
+      }
+
+      .text-info {
+        margin-left: -10px;
+        width: 100%;
+        margin-right: 20px;
+        line-height:26px;
+        font-size: 16px;
+        color: white;
+        background-color: #20647a;
+        padding: 9px 20px !important;
+        text-align: center;
+      }
+
+        .icon-flag {
+          height: 14px;
+          width: 24px;
+          margin: 0 4px -2px 5px;
+        }
+
+        .icon-weather {
+          height: 30px;
+          width: 36px;
+          margin: 0 -6px -10px;
+        }
+
+        i.person-name {
+          font-style: normal;
+          color: aqua;
+          margin-right: 2px;
+        }
+
+        .url {
+          padding-left: 18px;
+        }
+
+      .text-subinfo {
+        position: fixed;
+        bottom: 60px;
+        height: 18px;
+        line-height: 18px;
+        background: aqua;
+        color: black;
+        font-size: 12px;
+        margin: 0 20px 6px -10px;
+        width: 100%;
+        padding: 2px 20px !important;
+        text-align: center;
+        box-shadow: 2px 2px 12px 1px #555;
+      }
+
+        .text-subinfo span {
+          padding: 1px 18px;
+          margin: 0 8px;
+          background: #20647a;
+          border-radius: 10px;
+          color: white;
+        }
+
+      #message-container .text-bubble {
+        color: black;
+        padding-bottom: 0;
+      }
+
+
+/* ------ Start Card Message ----- */ 
+
+.modal-background {
+z-index:2;
+background-color: white;
+opacity: 0.7;
+position: fixed;
+padding:5px 20px;
+border-top: 1px solid black;
+bottom: 0;
+height: 62px;
+width: 100%;
+box-shadow: 0 0 12px #555;
+}
+
+.card {
+margin: 10px auto;
+text-align: center;
+padding: 30px 40px;
+margin-top: 60px;
+margin-bottom: 60px;
+border: 2px solid black;
+box-shadow: 14px 14px 20px -3px #555;
+background-color: white;
+border-radius: 10px;
+max-width: 350px;
+z-index: 3;
+text-align: center; 
+width: 320px;
+background:#20647a;
+color:white;
+text-align: center;
+}
+
+.card h3 {
+  font-weight: 400;
+}
+.url {
+  position: relative;
+  border-radius: 8px;
+  padding: 6px 0;
+}
+  .link-text {
+    display: inline-block;
+    margin: -8px 7px 0; 
+    color: aqua;
+    border: 0;
+    background: #20647a;
+    box-shadow: none;
+    outline:none;
+    width: 245px;
+  }
+  .icon-copy {
+    position: absolute;
+    top: 2px;   
+    right: 26px;
+    display: inline-block;
+    background: white;
+    padding: 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    background: aqua;
+  }
+
+.name-and-language-form {
+  background: #20647a;
+  color: white;
+  border-radius: 8px;
+  padding: 18px 0 10px;
+}
+
+input,
+select, 
+button {  
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin: 5px 0px 10px 0px;    
+    border: 1px solid #000;
+    box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 2px 2px;
+    font-size: 18px;  
+    font-weight: 300;
+}
+
+button,
+select {
+  width: 220px;
+}
+
+button {
+  margin-top: 10px;
+  background-color: green;
+  color: white;
+  cursor: pointer;
+}
+
+
+/* ------ Message Typing Area ----- */
+
+#send-container {
+  position: fixed;
+  padding:5px 20px;
+  bottom: 0;
+  width: 100%;
+  background: #20647a;
+}
+
+  #message-input {
+    width: calc(100% - 190px);
+    margin-right:10px;
+    min-width: 220px;
+    max-width: 1100px;
+    border: 2px solid black;
+    border-radius: 10px;
+    outline:none;
+  }
+
+  #send-button {
+    width: 100px;
+  }

@@ -13,6 +13,7 @@ const handleModalSubmit = e => {
   const language = document.querySelector('#select-language').value;
   document.querySelector('.modal-background').style.display = 'none';
   document.querySelector('.card').style.display = 'none';
+  document.getElementById('message-input').focus();
   
   joinNewUser(name, language);
 }
@@ -122,6 +123,12 @@ document.body.onload = () => {
   document.getElementById('input-name').focus()
 }
 
+function copyToClipboard(selectorOfInput) {
+  var copyText = document.querySelector(selectorOfInput);
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(copyText.value);
+}
 
 // Display message in the messages container
 function appendMessage(textObject) {
