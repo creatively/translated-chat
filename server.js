@@ -1,4 +1,3 @@
-const e = require('express')
 const express = require('express')
 const app = express()
 const server = require('http').Server(app)
@@ -8,16 +7,26 @@ const getRandomCharacters = require('./custom-modules/random-characters.js')
 const translate = require('./custom-modules/translate.js')
 const { getSupportedLanguagesObject , getLanguageDescriptionFromLanguageCode } = require('./custom-modules/languages.js')
 const getLocationAndWeather = require('./custom-modules/getLocationAndWeather.js')
+// const {ErrorReporting} = require('@google-cloud/error-reporting');
+// const errors = new ErrorReporting();
 
 app.set('views', './views')
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
+// app.use(errors.express)
 dotenv.config()
-server.listen(3000)
 
 const c = txt => console.log(txt);
 const ct = obj => console.table(obj);
+// const gLog = errorToLogInGoogleCloud => errors.report(errorToLogInGoogleCloud)
+// const gLogExpress = errorToLogInGoogleCloud => new Error(errorToLogInGoogleCloud)
+
+const port = process.env.PORT || 8080
+server.listen(port, () => {
+  c(`server started on :${port}`)
+  // gLogExpress(`server started on :${port}`)
+})
 
 
 // ------- ROOMS INIT --------

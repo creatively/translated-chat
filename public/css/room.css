@@ -228,23 +228,19 @@ text-align: center;
   .link-text {
     display: inline-block;
     margin: -8px 7px 0; 
-    color: aqua;
     border: 0;
     background: #20647a;
     box-shadow: none;
     outline:none;
-    width: 245px;
+    width: 100%;
+    font-size: 15px;
+    color: #bbb;
   }
   .icon-copy {
-    position: absolute;
-    top: 2px;   
-    right: 26px;
-    display: inline-block;
-    background: white;
     padding: 2px;
     border-radius: 5px;
     cursor: pointer;
-    background: aqua;
+    background: #ccc;
   }
 
 .name-and-language-form {
