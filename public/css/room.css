@@ -65,7 +65,7 @@ body {
           padding: 6px 12px;
           margin-bottom: 6px;
           opacity: 0;
-          animation: fader 1s linear;
+          animation: fader 0.75s linear;
           animation-fill-mode: forwards;
         }
         .text-bubble span:after {
