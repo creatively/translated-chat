@@ -5,6 +5,7 @@ const messageInput = document.getElementById('message-input')
 const c = txt => console.log(txt);
 const ct = obj => console.table(obj);
 
+c('--- version a')
 
 // Name & Language Modal Form
 const handleModalSubmit = e => {
