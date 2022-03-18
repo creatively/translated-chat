@@ -50,6 +50,17 @@ const getHTMLForCurrentsUsersOnline = activeUsers => {
 const nameAndLanguageForm = document.querySelector('.name-and-language-form') || null;
 nameAndLanguageForm ? nameAndLanguageForm.addEventListener('submit', handleModalSubmit) : null;
 
+function setUpLogOfOnlineOffline() {
+  window.addEventListener('offline', function(e) { console.log('--- offline'); });
+  window.addEventListener('online', function(e) { console.log('--- online'); });
+  // also note that setting an image src can delay leaving the page
+  // the server could then know if the user really had gone elsewhere or
+  // if just the connection has gone. 
+  // NB. Socket.io may handle this under the hood, but worth a look
+  // NB2. navigator.sendBeacon also available for a potentially relevant situation
+}
+setUpLogOfOnlineOffline()
+
 
 // Socket handling
 function joinNewUser(name, language) {
@@ -124,10 +135,12 @@ document.body.onload = () => {
 }
 
 function copyToClipboard(selectorOfInput) {
-  var copyText = document.querySelector(selectorOfInput);
-  copyText.select();
-  copyText.setSelectionRange(0, 99999);
-  navigator.clipboard.writeText(copyText.value);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    var copyText = document.querySelector(selectorOfInput);
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value);
+  }
 }
 
 // Display message in the messages container

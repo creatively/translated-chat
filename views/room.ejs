@@ -33,9 +33,13 @@
       <h3>A simple chat webpage supporting up to 4 different languages in any group session</h3><br>
       Copy this url to invite others<br>
       <div class="url">
+
         <script>
-          document.write("<input type='text' class='link-text' value='"+location.href+"' /><br>")
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            document.write("<input type='text' class='link-text' value='"+location.href+"' /><br>")
+          }
         </script>
+        
         <image class="icon-copy" src="./images/icon-copy.png" onclick="copyToClipboard('.link-text')" />
       </div>
     </div>
