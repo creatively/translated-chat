@@ -24,7 +24,7 @@ module.exports = function translate(message, from, to, callback, roomUsersArrayE
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'X-API-Key': process.env.KEY_API_TRANSLATIONS_LECTO
+      'X-API-Key': `${process.env.KEY_API_TRANSLATIONS_LECTO}`
     },
     data: {
       texts: [message],
@@ -44,7 +44,6 @@ module.exports = function translate(message, from, to, callback, roomUsersArrayE
       });
       callback(translations, roomUsersArrayExcludingSender, senderName);
   }).catch(function (error) {
-console.log(process.env.KEY_API_TRANSLATIONS_LECTO);
     console.error('>>>>> translations failed for ... <<<<\n', error);
     console.log(error.response.config.data+'\n');
   });
