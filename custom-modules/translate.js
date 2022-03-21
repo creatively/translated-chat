@@ -24,8 +24,7 @@ module.exports = function translate(message, from, to, callback, roomUsersArrayE
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'X-API-Key': `${process.env.KEY_API_TRANSLATIONS_LECTO}`,
-      'Access-Control-Allow-Origin': '*'
+      'X-API-Key': `${process.env.KEY_API_TRANSLATIONS_LECTO}`
     },
     data: {
       texts: [message],
