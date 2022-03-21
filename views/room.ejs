@@ -9,15 +9,21 @@
   <link rel="stylesheet" href="./css/room.css">
  
   <script>
-    const roomName = "<%= roomName %>"
-    const supportedLanguagesString =<%-JSON.stringify(supportedLanguages)%>
-    const supportedLanguages = JSON.parse(supportedLanguagesString)
+    var roomName = "<%= roomName %>"
+    var ip = "<%= ip %>"
+    var supportedLanguagesString =<%-JSON.stringify(supportedLanguages)%>
+    var supportedLanguages = JSON.parse(supportedLanguagesString)
   </script>
   <script defer src="/socket.io/socket.io.js"></script>
   <script defer src="./js/script.js"></script>
 
 </head>
 <body>
+
+  <!-- TOP BAR -->
+  <div id="top-bar">
+
+  </div>
 
   <!-- LIST OF MESSAGES -->
   <div id="message-container">
@@ -27,7 +33,6 @@
 
   <!-- MODAL FOR NAME AND LANGUAGE -->
   <div class="card">
-    <h3 class="text-center mb-4 visuallyhidden">Please provide your name and language</h3>
 
     <div class="welcome">
       <h3>A simple chat webpage supporting up to 4 different languages in any group session</h3><br>
@@ -36,11 +41,10 @@
 
         <script>
           if (navigator.clipboard && navigator.clipboard.writeText) {
-            document.write("<input type='text' class='link-text' value='"+location.href+"' /><br>")
+            document.write('<image class="icon-copy" src="./images/icon-copy.png" onclick="copyToClipboard()" />')
           }
         </script>
         
-        <image class="icon-copy" src="./images/icon-copy.png" onclick="copyToClipboard('.link-text')" />
       </div>
     </div>
 
@@ -75,9 +79,6 @@
     <input type="text" id="message-input">
     <button type="submit" id="send-button">Send</button>
   </form>
-
-  <div class="modal-background"></div>
-
 
 </body>
 </html>

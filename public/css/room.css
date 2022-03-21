@@ -278,6 +278,7 @@ button {
 /* ------ Message Typing Area ----- */
 
 #send-container {
+  display: none;
   position: fixed;
   padding:5px 20px;
   bottom: 0;

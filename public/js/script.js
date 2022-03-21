@@ -5,15 +5,13 @@ const messageInput = document.getElementById('message-input')
 const c = txt => console.log(txt);
 const ct = obj => console.table(obj);
 
-c('--- version a')
-
 // Name & Language Modal Form
 const handleModalSubmit = e => {
   e.preventDefault();
   const name = document.querySelector('#input-name').value;
   const language = document.querySelector('#select-language').value;
-  document.querySelector('.modal-background').style.display = 'none';
   document.querySelector('.card').style.display = 'none';
+  document.getElementById('send-container').style.display = 'block';
   document.getElementById('message-input').focus();
   
   joinNewUser(name, language);
@@ -67,7 +65,7 @@ setUpLogOfOnlineOffline()
 function joinNewUser(name, language) {
 
   // announce new user
-  socket.emit('new-user', roomName, name, language);
+  socket.emit('new-user', roomName, name, language, ip);
 
   // send chat message
   document.getElementById('send-container').addEventListener('submit', e => {
@@ -135,12 +133,9 @@ document.body.onload = () => {
   document.getElementById('input-name').focus()
 }
 
-function copyToClipboard(selectorOfInput) {
+function copyToClipboard() {
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    var copyText = document.querySelector(selectorOfInput);
-    copyText.select();
-    copyText.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(copyText.value);
+    navigator.clipboard.writeText(location.href)
   }
 }
 
