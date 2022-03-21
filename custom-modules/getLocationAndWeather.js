@@ -43,7 +43,7 @@ c(JSON.stringify(response.data).substring(0,160) )
                     callbackData['weatherApiWorkedOK'] = true
                 }).catch(function (e) {
 c('--- weather error')
-ct(e)
+c(JSON.stringify(e))
                     console.error('>>>>> Weather API call failed <<<<');
                     callbackData['weatherApiWorkedOK'] = false
                 }).then(() => {
