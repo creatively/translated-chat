@@ -88,7 +88,7 @@ app.get('/:room', (req, res) => {
   res.render('room', { 
     roomName: req.params.room,
     supportedLanguages: JSON.stringify(getSupportedLanguagesObject()),
-    ip: req.headers['x-forwarded-for'] || req.socket.localAddress
+    usersIp: req.headers['x-forwarded-for'] || req.socket.localAddress ,
   })
 });
 
@@ -107,7 +107,7 @@ const addUserToRoom = (roomName, userObject) => {
 io.on('connection', (usersConnection) => {
 
   // New User
-  usersConnection.on('new-user', (roomName, name, language, usersIP) => {
+  usersConnection.on('new-user', (roomName, name, language, usersIp) => {
     usersConnection.join(roomName);
     addUserToRoom(roomName, {
       'id': usersConnection.id,
@@ -117,7 +117,7 @@ io.on('connection', (usersConnection) => {
     });
 
     const activeUsers = getRoomUsersNameAndLanguage(roomName);
-    getLocationAndWeather(usersIP ,newUsersLocationAndWeather => {
+    getLocationAndWeather(usersIp ,newUsersLocationAndWeather => {
       const newUserNameAndLanguage = {
         name: name,
         language: getLanguageDescriptionFromLanguageCode(language)

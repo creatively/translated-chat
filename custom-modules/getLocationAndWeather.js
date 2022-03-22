@@ -1,7 +1,9 @@
-module.exports = function getLocationAndWeather(ip, callback) {
+module.exports = function getLocationAndWeather(usersIp, callback) {
 
     var axios = require("axios").default
     let callbackData = {};
+    const c = txt => console.log(txt)
+    const ct = obj => console.table(obj)
 
     // Utils
     const convertLocaltimeToHoursOnly = dateTime => {
@@ -10,8 +12,9 @@ module.exports = function getLocationAndWeather(ip, callback) {
         return time.replace('.', ':').replace(' ','0')
     }
 
+
     // Get Location Data
-    axios.request({url: `https://ipwhois.app/json/`})
+    axios.request({url: `https://ipwhois.app/json/${usersIp}`})
         .then(function (response) {
             const data = response.data;
             callbackData['city'] = data.city
@@ -24,6 +27,7 @@ module.exports = function getLocationAndWeather(ip, callback) {
             callbackData['locationApiWorkedOK'] = false
             callback(callbackData)
         }).then(function(){
+
             // Get Weather data
             const coordinates = `${callbackData['latitude']},${callbackData['longitude']}`
             axios.request({url: `https://api.weatherapi.com/v1/current.json?key=${process.env.KEY_API_WEATHERAPI}&q=${coordinates}`})

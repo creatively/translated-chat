@@ -65,7 +65,7 @@ setUpLogOfOnlineOffline()
 function joinNewUser(name, language) {
 
   // announce new user
-  socket.emit('new-user', roomName, name, language, ip);
+  socket.emit('new-user', roomName, name, language, usersIp);
 
   // send chat message
   document.getElementById('send-container').addEventListener('submit', e => {

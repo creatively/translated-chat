@@ -10,7 +10,8 @@
  
   <script>
     var roomName = "<%= roomName %>"
-    var ip = "<%= ip %>"
+    var usersIp = "<%= usersIp %>"
+    usersIp = usersIp.split(',')[0]
     var supportedLanguagesString =<%-JSON.stringify(supportedLanguages)%>
     var supportedLanguages = JSON.parse(supportedLanguagesString)
   </script>
