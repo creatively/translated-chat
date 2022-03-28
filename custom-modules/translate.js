@@ -25,7 +25,6 @@ Google Translate 403 errors.
 // Service Account Name = 'translated-chat'
 // Service Account Id = 'translated-chat-630'
 
-const c = txt => console.log(txt)
 
 var axios = require("axios").default;
 
@@ -33,10 +32,12 @@ module.exports = function translate(message, from, to, callback, roomUsersArrayE
 
   if (provider && provider === 'google') {
 
+    console.log('--- translations from google')
+
     const projectId = 'translated-chat';
     const {Translate} = require('@google-cloud/translate').v2;
     const translate = new Translate({projectId});
-console.log('---- goggle');
+
     (async () => {
       let [_translations] = await translate.translate(message, to[0]);
       _translations = Array.isArray(_translations) ? _translations : [_translations];
@@ -54,6 +55,7 @@ console.log('---- goggle');
 
   } else {  // use lecto translate
     
+    console.log('--- translations from default (lecto)')
     var options = {
       method: 'POST',
 

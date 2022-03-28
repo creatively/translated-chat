@@ -81,7 +81,6 @@ function joinNewUser(name, language) {
 
 // receive chat message
 socket.on('chat-message', data => {
-  console.table(data)
   appendMessage({
     textBubble: data.message,
     textName: data.name
