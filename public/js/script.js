@@ -81,6 +81,7 @@ function joinNewUser(name, language) {
 
 // receive chat message
 socket.on('chat-message', data => {
+  console.table(data)
   appendMessage({
     textBubble: data.message,
     textName: data.name
@@ -98,7 +99,7 @@ socket.on('info-message-only-user', data => {
   appendMessage({
     textInfo: 
       `${data.message}, - send this url to invite others<br>
-      ${location.host + location.pathname}`
+      <image class="icon-copy" src="./images/icon-copy.png" onclick="copyToClipboard()" />`
   })
 })
 
@@ -110,8 +111,6 @@ socket.on('user-connected', (newUserDetails, activeUsers) => {
 })
 
 socket.on('user-disconnected', (name, activeUsers) => {
-console.log(':user-disconnected');
-console.table(activeUsers);
   appendMessage({
     textInfo: `${name} disconnected`
   })

@@ -34,20 +34,20 @@
 
   <!-- MODAL FOR NAME AND LANGUAGE -->
   <div class="card">
-
-    <div class="welcome">
-      <h3>A simple chat webpage supporting up to 4 different languages in any group session</h3><br>
-      Copy this url to invite others<br>
-      <div class="url">
-
-        <script>
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            document.write('<image class="icon-copy" src="./images/icon-copy.png" onclick="copyToClipboard()" />')
-          }
-        </script>
-        
-      </div>
-    </div>
+    <h3>Translated chat<br>
+      with up to 4 different languages in any group session
+    </h3><br>
+    
+    <script>
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        document.write(
+          'Copy this url to invite others<br>'+
+          '<div class="url">'+
+            '<image class="icon-copy" src="./images/icon-copy.png" onclick="copyToClipboard()" />'+
+          '</div>'
+        )
+      }
+    </script>
 
     <form class="name-and-language-form">
 

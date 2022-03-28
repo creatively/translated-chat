@@ -125,16 +125,11 @@ body {
         width: 100%;
         margin-right: 20px;
         line-height:26px;
+        font-size: 16px;
         color: white;
         background-color: #20647a;
         padding: 9px 20px !important;
         text-align: center;
-        text-shadow: 2px 3px 2px black;
-        font-family: 'Delius', sans-serif;
-        font-size: 18px;
-        text-transform: uppercase;
-        border: 2px solid #000;
-        letter-spacing: 1px;
       }
 
         .icon-flag {
@@ -283,7 +278,6 @@ button {
 /* ------ Message Typing Area ----- */
 
 #send-container {
-  display: none;
   position: fixed;
   padding:5px 20px;
   bottom: 0;
@@ -302,6 +296,5 @@ button {
   }
 
   #send-button {
-    border: 2px solid black;
     width: 100px;
   }

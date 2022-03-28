@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "stop": "killall node"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/error-reporting": "^2.0.4",
+    "@google-cloud/translate": "^6.3.1",
     "axios": "^0.26.0",
     "dotenv": "^16.0.0",
     "ejs": "^2.6.1",

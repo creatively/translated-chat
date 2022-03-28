@@ -147,7 +147,18 @@ io.on('connection', (usersConnection) => {
   usersConnection.on('send-chat-message', (room, message) => {
 
     const callback_getTranslations = (translations, roomUsersArray, senderName) => {
+console.log('--- callback from transltion running')
+console.table(roomUsersArray)
+console.log(senderName)
+c('----')
       roomUsersArray.forEach(user => {
+console.log('--- translations received back in server.js just before emit ...');
+console.table(translations)
+console.log(translations)
+
+// for google, translations needs to be an object with keys that are lang-codes
+// 
+
         emitMessage(user.id, senderName, translations[user.language]);
       });
     }
@@ -203,7 +214,17 @@ io.on('connection', (usersConnection) => {
       const toLangaugesExcludingSendersLanguage = toLanguages.filter(language => fromLanguage);
       const translationsNeeded = toLangaugesExcludingSendersLanguage.length > 0;
       if (translationsNeeded) {
-        translate(message, fromLanguage, toLanguages, callback_getTranslations, roomUsersArrayExcludingSender, senderName);
+        translate(
+            message, 
+            fromLanguage, 
+            toLanguages, 
+            callback_getTranslations, 
+            roomUsersArrayExcludingSender, 
+            senderName, 
+            //'google'
+            'lecto'
+            //process.env.TRANSLATOR_PROVIDER
+          );
       } else {
         emitUntranslatedMessage(message, roomUsersArrayExcludingSender, senderName);
       }
