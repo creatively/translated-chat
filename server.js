@@ -8,7 +8,7 @@ const translate = require('./custom-modules/translate.js')
 const { getSupportedLanguagesObject , getLanguageDescriptionFromLanguageCode } = require('./custom-modules/languages.js')
 const getLocationAndWeather = require('./custom-modules/getLocationAndWeather.js')
 // const {ErrorReporting} = require('@google-cloud/error-reporting');
-// const errors = new ErrorReporting();
+// const errors = new ErrorReporting(); 
 
 app.set('views', './views')
 app.set('view engine', 'ejs')
