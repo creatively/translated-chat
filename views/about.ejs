@@ -6,29 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>translation.chat - privacy policy</title>
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Nunito">
-    <style>
-        body        {margin: 0;font-family:'Nunito','Trebuchet MS'}
-        a           {text-decoration: none}
-    </style>
-    <style>
-            .topbar             {padding:10px;height:20px}
-                .logo           {float:left}
-                .icon-menu      {float:right;cursor:pointer}
-            ul.menu-titles      {display:none}
-            ul.menu-titles.open {display:block;margin: 0;padding: 0;list-style: none;border-bottom:1px solid black}
-                li.menu-item    {text-align: right;margin:6px 0;border-top: 1px solid black}
-                h2              {color: black;padding: 0 20px;margin:6px 0 0 20px;font-size:18px;}
-                    .menu-item-content {display:none;text-align: left;line-height: 28px;border-top: 2px solid white;padding: 6px 20px 10px;}
-                    .menu-item-content.open {display:block}
-                        h4      {margin:18px 0 4px}
-            
-        /*
-        pale blue #75DBF0
-        mid-blue #43A7D9
-        purple-red #FF82EA
-        ? #0667BD
-        */
-    </style>
+    <link rel="stylesheet" href="./css/room.css">
+    <link rel="stylesheet" href="./css/topbar.css">
+
 </head>
 <body>
 
@@ -73,13 +53,20 @@
                 <h4>CONTACT</h4>
                 If you have any questions or suggestions about this Privacy Policy or website, please do not hesitate to make contact at chris@creatively.co.uk <br>
             
-                <h4>CARBON EMISSIONS POLICY</h4>
-                >  All electricity used by this website, both in the hosting of, and in the development of, is obtained from renewable sources without use of fossil fuels, with the exception of any 3rd party API services used by this website. <br>
                 <br>
                 <br>
             </div>
         </li>
 
+        <li class="menu-item carbon-useage">
+            <a href="#" name="carbon-useage"><h2>CARBON USEAGE</h2></a>
+            <div class="menu-item-content">
+                <h4>CARBON EMISSIONS POLICY</h4>
+                All electricity used by this website, both in the hosting of, and in the development of, is obtained from renewable sources without use of fossil fuels, with the exception of any 3rd party API services used by this website. <br>
+                <br>
+                <br>
+            </div>
+        </li>
     </ul>
 
     <script>
@@ -87,9 +74,11 @@
         var menuTitles = document.querySelector('.menu-titles')
         var headingAbout = document.querySelector('.about')
         var headingPrivacyPolicy = document.querySelector('.privacy-policy')
+        var carbonPolicy = document.querySelector('.carbon-useage')
         menuIcon.addEventListener('click', toggleMenu)
         headingAbout.addEventListener('click', toggleMenuItem)
         headingPrivacyPolicy.addEventListener('click', toggleMenuItem)
+        carbonPolicy.addEventListener('click', toggleMenuItem)
 
         function toggleMenu() {
             menuTitles.classList.contains('open') ? menuTitles.classList.remove('open') : menuTitles.classList.add('open')

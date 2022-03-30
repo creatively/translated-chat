@@ -1,0 +1,14 @@
+.topbar                 {padding:10px;height:20px;background-color:white;box-shadow:0px 0px 5px 1px #555;}
+        .logo           {float:left}
+        .topbar .icon-copy      {float:right;padding:0 12px;border-radius:0;cursor:pointer;background:#fff}
+        .icon-menu      {float:right;cursor:pointer}
+    ul.menu-titles      {display:none}
+    ul.menu-titles.open {display:block;margin:0;padding:0;list-style:none}
+        li.menu-item    {text-align: right}             
+        li.menu-item.about{background:linear-gradient(to right, #017387 0%, #00B1D1 80%)}
+        li.menu-item.privacy{background:linear-gradient(to right, #145E9E 0%, #1C88E6 80%)}
+        li.menu-item.carbon{background:linear-gradient(to right, #234BA6 0%, #326EF4 80%)}
+        h2              {color: white;padding: 8px 20px;margin:0 0 0 20px;font-size:18px;}
+            .menu-item-content {color:white;display:none;text-align: left;line-height: 28px;padding: 6px 20px 10px;}
+            .menu-item-content.open {display:block}
+                .topbar h4     {margin:0 0 4px}

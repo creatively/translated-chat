@@ -6,6 +6,11 @@ body {
     background-color: #03e3fc;
     background: url('/images/cartoon-blue-background.jpg') no-repeat center fixed;
     background-size: cover;
+    font-family:'Nunito','Arial'
+  }
+
+  a {
+    text-decoration: none
   }
 
   .visuallyhidden {
@@ -186,35 +191,34 @@ body {
 /* ------ Start Card Message ----- */ 
 
 .modal-background {
-z-index:2;
-background-color: white;
-opacity: 0.7;
-position: fixed;
-padding:5px 20px;
-border-top: 1px solid black;
-bottom: 0;
-height: 62px;
-width: 100%;
-box-shadow: 0 0 12px #555;
+  z-index:2;
+  background-color: white;
+  opacity: 0.7;
+  position: fixed;
+  padding:5px 20px;
+  border-top: 1px solid black;
+  bottom: 0;
+  height: 62px;
+  width: 100%;
+  box-shadow: 0 0 12px #555;
 }
 
 .card {
-margin: 10px auto;
-text-align: center;
-padding: 30px 40px;
-margin-top: 60px;
-margin-bottom: 60px;
-border: 2px solid black;
-box-shadow: 14px 14px 20px -3px #555;
-background-color: white;
-border-radius: 10px;
-max-width: 350px;
-z-index: 3;
-text-align: center; 
-width: 320px;
-background:#20647a;
-color:white;
-text-align: center;
+  margin: 10px auto;
+  text-align: center;
+  padding: 30px 40px;
+  margin-top: 60px;
+  margin-bottom: 60px;
+  border: 2px solid black;
+  box-shadow: 14px 14px 20px -3px #333;
+  border-radius: 10px;
+  max-width: 350px;
+  z-index: 3;
+  text-align: center; 
+  width: 320px;
+  background:#017387;
+  color:white;
+  text-align: center;
 }
 
 .card h3 {
@@ -279,10 +283,11 @@ button {
 
 #send-container {
   position: fixed;
-  padding:5px 20px;
+  padding: 0 10px;
   bottom: 0;
   width: 100%;
   background: #20647a;
+  box-shadow: -1px -1px 7px 0 #000;
 }
 
   #message-input {
@@ -297,4 +302,5 @@ button {
 
   #send-button {
     width: 100px;
+    background-color:#017387
   }
