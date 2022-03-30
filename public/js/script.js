@@ -26,14 +26,10 @@ const getHTMLForNewUserAnnouncement = newUserDetails => {
        <img class="icon-flag" src="${newUserDetails.countryFlag}" height="15" width="20" />
       ${newUserDetails.country}` : ``
 
-  const weatherHTML = (newUserDetails.weatherApiWorkedOK) ?
-     ` where it's now
-      ${newUserDetails.localtime} and
-      <img class="icon-weather" src="${newUserDetails.iconUrl}" />
-      ${newUserDetails.temp}'C
-       in ${newUserDetails.city}` : ``
+  const timeHTML = (newUserDetails.weatherApiWorkedOK) ?
+     ` at ${newUserDetails.localtime} local time` : ``
 
-  return nameAndLanguageHTML + locationHTML + weatherHTML
+  return nameAndLanguageHTML + locationHTML + timeHTML
 }
 
 const getHTMLForCurrentsUsersOnline = activeUsers => {

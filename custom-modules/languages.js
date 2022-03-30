@@ -1,4 +1,10 @@
 const supportedLanguages = {
+    'hi': 'Hindi',
+    'ar': 'Arabic',
+    'fr': 'French',
+    'es': 'Spanish',
+    'cy': 'Welsh',
+    'aa': '--------',
     'af': 'Afrikaans',
     'sq': 'Albanian',
     'am': 'Amharic',

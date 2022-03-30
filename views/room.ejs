@@ -19,6 +19,13 @@
   </script>
   <script defer src="/socket.io/socket.io.js"></script>
   <script defer src="./js/script.js"></script>
+  <script>
+    function addClipboardCopier() {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        document.write('<image class="icon-copy" src="./images/icon-copy.png" onclick="copyToClipboard()" />')
+      }
+    }
+  </script>
 
 </head>
 <body>
@@ -30,15 +37,13 @@
     <div class="topbar">
         <img class="logo" src="./images/logo.png" alt="logo" height="22" />
         <a href="#"><img class="icon-menu" src="./images/icon-menu.png" alt="menu opener" height="24" /></a>
-        <script>if (navigator.clipboard && navigator.clipboard.writeText) {
-          document.write('<image class="icon-copy" src="./images/icon-copy.png" onclick="copyToClipboard()" />')
-        }</script>
+        <script>addClipboardCopier()</script>
     </div>
 
     <ul class="menu-titles">
 
         <li class="menu-item about">
-            <a href="#" name="#about"><h2>ABOUT</h2></a>
+            <a href="#" name="#about"><h2>ABOUT translated.chat</h2></a>
             <div class="menu-item-content">
                 >  translated.chat makes life easier for friends with different first languages<br>
                 >  translated.chat provides a free chat tool that automatically translates messages as they fly between friends<br>
@@ -73,7 +78,7 @@
         </li>
 
         <li class="menu-item carbon">
-            <a href="#" name="carbon"><h2>CARBON USEAGE</h2></a>
+            <a href="#" name="carbon"><h2>CARBON USAGE</h2></a>
             <div class="menu-item-content">
                 <h4>CARBON EMISSIONS POLICY</h4>
                 All electricity used by this website, both in the hosting of, and in the development of, is obtained from renewable sources without use of fossil fuels, with the exception of any 3rd party API services used by this website. <br>
@@ -86,11 +91,11 @@
         var menuTitles = document.querySelector('.menu-titles')
         var headingAbout = document.querySelector('.about')
         var headingPrivacyPolicy = document.querySelector('.privacy')
-        var headingCarbonUseage = document.querySelector('.carbon')
+        var headingCarbonUsage = document.querySelector('.carbon')
         menuIcon.addEventListener('click', toggleMenu)
         headingAbout.addEventListener('click', toggleMenuItem)
         headingPrivacyPolicy.addEventListener('click', toggleMenuItem)
-        headingCarbonUseage.addEventListener('click', toggleMenuItem)
+        headingCarbonUsage.addEventListener('click', toggleMenuItem)
 
         function toggleMenu() {
             menuTitles.classList.contains('open') ? menuTitles.classList.remove('open') : menuTitles.classList.add('open')
@@ -113,20 +118,10 @@
 
   <!-- MODAL FOR NAME AND LANGUAGE -->
   <div class="card">
-    <h3>Translated chat<br>
-      with up to 4 different languages in any group session
-    </h3><br>
+    <h3></h3>
+    <h3>Start chatting across languages now. No need for registrations, logins or app downloads. And just copy this page link if you want to invite others too</h3>
     
-    <script>
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        document.write(
-          'Copy this url to invite others<br>'+
-          '<div class="url">'+
-            '<image class="icon-copy" src="./images/icon-copy.png" onclick="copyToClipboard()" />'+
-          '</div>'
-        )
-      }
-    </script>
+    <script>addClipboardCopier()</script><br><br>
 
     <form class="name-and-language-form">
 
