@@ -235,6 +235,9 @@ body {
     cursor: pointer;
     background: #fff;
   }
+    .icon-copy.copied {
+      opacity: 0.3;
+    }
 
 .name-and-language-form {
   background: #20647a;
@@ -295,3 +298,21 @@ button {
     width: 100px;
     background-color:#017387
   }
+
+/* ----- Overlay ----- */
+
+#overlay {
+  display: none;
+  z-index: 9;
+  background: black;
+  opacity: 0.7;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#overlay.on {
+  display: block;
+}

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>translation.chat</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Delius">
-  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nunito">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Delius">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Nunito">
   <link rel="stylesheet" href="./css/topbar.css">
   <link rel="stylesheet" href="./css/room.css">
  
@@ -30,7 +30,8 @@
 </head>
 <body>
 
-
+  <!-- OVERLAY -->
+  <div id="overlay"></div>
 
   <!-- TOP BAR -->
   <header>
@@ -92,13 +93,20 @@
         var headingAbout = document.querySelector('.about')
         var headingPrivacyPolicy = document.querySelector('.privacy')
         var headingCarbonUsage = document.querySelector('.carbon')
+        var overlay = document.getElementById('overlay')
         menuIcon.addEventListener('click', toggleMenu)
         headingAbout.addEventListener('click', toggleMenuItem)
         headingPrivacyPolicy.addEventListener('click', toggleMenuItem)
         headingCarbonUsage.addEventListener('click', toggleMenuItem)
 
         function toggleMenu() {
-            menuTitles.classList.contains('open') ? menuTitles.classList.remove('open') : menuTitles.classList.add('open')
+            if (menuTitles.classList.contains('open')) {
+              menuTitles.classList.remove('open')
+              overlay.classList.remove('on')
+            } else {
+              menuTitles.classList.add('open')
+              overlay.classList.add('on')
+            }
             return false
         }
 
@@ -109,6 +117,7 @@
         }
     </script>
   </header>
+
 
   <!-- LIST OF MESSAGES -->
   <div id="message-container">

@@ -1,4 +1,6 @@
 header                  {position:fixed;top:0;width:100%;z-index:10}
+.overlay                {background:black;opacity: 0.8;position:fixed;top:0;left:0;height:100%;width:100%;z-index:9;display:none}
+.overlay.on             {display:block}
 .topbar                 {padding:10px;height:20px;background-color:white;box-shadow:0px 0px 5px 1px #555;}
         .logo           {float:left}
         .topbar .icon-copy      {float:right;padding:0 12px;border-radius:0;cursor:pointer;background:#fff}
@@ -9,4 +11,4 @@ header                  {position:fixed;top:0;width:100%;z-index:10}
         h2              {color: white;padding: 8px 20px;margin:0 0 0 20px;font-size:18px;}
             .menu-item-content {color:white;display:none;text-align: left;line-height: 28px;padding: 6px 20px 10px;}
             .menu-item-content.open {display:block}
-                .topbar h4     {margin-top:0 0 4px}
+                .topbar h4     {margin-top:0 !important}

@@ -127,9 +127,10 @@ document.body.onload = () => {
   document.getElementById('input-name').focus()
 }
 
-function copyToClipboard() {
+function copyToClipboard(e) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(location.href)
+    document.querySelectorAll('.icon-copy').forEach(item => item.classList.add('copied'))
   }
 }
 
