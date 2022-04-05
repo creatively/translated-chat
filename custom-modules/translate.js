@@ -1,11 +1,7 @@
 /*
 
 This "translate" method/module interacts with a remote translation API
-  it returns an array of translations, for the (up to 3) languages listed as "to" array parameter  eg. ...
 
-    (message, from,   to (max 3),   callback,             roomUsersArrayExcludingSender)
-    ('hi',    'en',   ['fr','de'],  myCallbackFunction,   objectToPassThroughInThisClosure)
-  
     results in ....
       { 
         'fr' : 'Bonjour.',
@@ -24,68 +20,37 @@ Google Translate 403 errors.
 
 // Service Account Name = 'translated-chat'
 // Service Account Id = 'translated-chat-630'
+const c = txt => console.log(txt);
+const ct = txt => console.table(txt);
 
 
-var axios = require("axios").default;
 
-module.exports = function translate(message, from, to, callback, roomUsersArrayExcludingSender, senderName, provider) {
+module.exports = function translate(message, from, targetLanguages, callback, roomUsersArrayExcludingSender, senderName) {
+  const projectId = 'translated-chat';
+  const {Translate} = require('@google-cloud/translate').v2;
+  const translate = new Translate({projectId});
+  let translations = {};
+  let translationsReturnedSoFar = 0;
+  const numberOfTargetLanguages = targetLanguages.length;
 
-  if (provider && provider === 'google') {
-
-    console.log('--- translations from google')
-
-    const projectId = 'translated-chat';
-    const {Translate} = require('@google-cloud/translate').v2;
-    const translate = new Translate({projectId});
-
-    (async () => {
-      let [_translations] = await translate.translate(message, to[0]);
-      _translations = Array.isArray(_translations) ? _translations : [_translations];
-
-      let translations = {};
-      let languageIndex = 0;
-      _translations.forEach(translation => {
-        const language = to[languageIndex];
-        translations[language] = translation;
-        languageIndex++;
-      });
-
+  const addToCallback = translationResult => {
+c(translationResult)
+    translations[targetLanguages[translationsReturnedSoFar]] = translationResult;
+    const numberOfTranslationsDone = Object.keys(translations).length;
+    if (numberOfTranslationsDone === numberOfTargetLanguages) {
       callback(translations, roomUsersArrayExcludingSender, senderName)
-    })()
-
-  } else {  // use lecto translate
-    
-    console.log('--- translations from default (lecto)')
-    var options = {
-      method: 'POST',
-
-      url: 'https://api.lecto.ai/v1/translate/text',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-API-Key': `${process.env.KEY_API_TRANSLATIONS_LECTO}`
-      },
-      data: {
-        texts: [message],
-        from: from,
-        to: to
-      }
-    };
-
-    axios.request(options)
-      .then(function (response) {
-        let translations = {};
-        let languageIndex = 0;
-        response.data.translations.forEach(translation => {
-          const language = to[languageIndex];
-          translations[language] = translation.translated[0];
-          languageIndex++;
-        });
-        callback(translations, roomUsersArrayExcludingSender, senderName);
-    }).catch(function (error) {
-      console.error('>>>>> translations failed for ... <<<<\n', error);
-      console.log(error.response.config.data+'\n');
-    });
-
+    } else {
+      translationsReturnedSoFar++;
+      go(targetLanguages[translationsReturnedSoFar])
+    }
   }
+
+  async function go(targetLanguage) {
+    const translationResult = await translate.translate(message, targetLanguage);
+    c(translationResult[1].data.translations)//[1].detectedSourceLanguage)
+    c(translationResult[0])
+    addToCallback(translationResult[0])
+  }
+
+  go(targetLanguages[0])
 }

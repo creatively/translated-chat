@@ -144,6 +144,7 @@ function appendMessage(textObject) {
   messageElement.setAttribute('class', obj.type)
   messageElement.innerHTML = getMessageInnerHTML(obj)
   messageContainer.append(messageElement)
+  window.scrollTo(0, document.body.scrollHeight)
 }
 
   function getMessageInnerHTML(textObject) {

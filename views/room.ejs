@@ -20,9 +20,11 @@
   <script defer src="/socket.io/socket.io.js"></script>
   <script defer src="./js/script.js"></script>
   <script>
-    function addClipboardCopier() {
+    function addClipboardCopier(textAlternativeNeeded) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         document.write('<image class="icon-copy" src="./images/icon-copy.png" onclick="copyToClipboard()" />')
+      } else if (textAlternativeNeeded) {
+        document.write(location.href)
       }
     }
   </script>
@@ -128,9 +130,9 @@
   <!-- MODAL FOR NAME AND LANGUAGE -->
   <div class="card">
     <h3></h3>
-    <h3>Start chatting across languages now. No need for registrations, logins or app downloads. And just copy this page link if you want to invite others too</h3>
+    <h3>Start chatting across multiple languages now. No need for registrations, logins or app downloads. Others can join using this link</h3>
     
-    <script>addClipboardCopier()</script><br><br>
+    <script>addClipboardCopier('textAlternativeNeeded')</script><br><br>
 
     <form class="name-and-language-form">
 
@@ -165,4 +167,5 @@
   </form>
 
 </body>
+<script>document.body.classList.add('bg')</script>
 </html>

@@ -3,10 +3,13 @@ body {
     letter-spacing: 0.7px;
     padding: 0;
     margin: 0;
-    background-color: #03e3fc;
-    background: url('/images/cartoon-blue-background.jpg') no-repeat center fixed;
+    background: no-repeat center fixed;
+    background-color: #02cde3;
     background-size: cover;
-    font-family:'Nunito','Arial'
+    font-family:'Nunito','Arial';
+  }
+  body.bg {
+    background-image: url('/images/cartoon-blue-background.jpg');
   }
 
   a {
@@ -30,9 +33,9 @@ body {
 
   #message-container {
     z-index:8;
-    position: fixed;
+    position: relative;
     bottom: 97px;
-    padding: 0px 10px;
+    padding: 110px 10px 0;
     font-size: 20px;
     width: calc(100% - 20px);
     height: auto;
@@ -169,11 +172,15 @@ body {
         background: aqua;
         color: black;
         font-size: 12px;
-        margin: 0 20px 6px -10px;
+        margin: 0 20px 0 -10px;
         width: 100%;
         padding: 2px 20px !important;
         text-align: center;
         box-shadow: 2px 2px 12px 1px #555;
+        z-index:8;
+      }
+      #message-container div.text-subinfo {
+        margin-bottom: 1px;
       }
 
         .text-subinfo span {
@@ -196,7 +203,6 @@ body {
   margin: 10px auto;
   text-align: center;
   padding: 30px 40px;
-  margin-top: 60px;
   margin-bottom: 60px;
   border: 2px solid black;
   box-shadow: 14px 14px 20px -3px #333;
@@ -281,7 +287,7 @@ button {
   width: 100%;
   background:linear-gradient(to right, #017387 0%, #00B1D1 80%);
   box-shadow: -1px -1px 7px 0 #000;
-  z-index:9;
+  z-index:8;
 }
 
   #message-input {
