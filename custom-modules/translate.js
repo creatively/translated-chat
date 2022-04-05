@@ -42,7 +42,7 @@ c(translationResult)
     if (numberOfTranslationsDone === numberOfTargetLanguages) {
       callback(translations, roomUsersArrayExcludingSender, senderName)
     } else {
-      const targetLanguage = targetLanguages[translationsAddedSoFar]
+      const targetLanguage = targetLanguages[numberOfTranslationsDone]
       go(targetLanguage)
     }
   }
