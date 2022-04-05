@@ -25,30 +25,30 @@ const ct = txt => console.table(txt);
 
 
 
-module.exports = function translate(message, from, targetLanguages, callback, roomUsersArrayExcludingSender, senderName) {
+module.exports = function translate(message, fromLanguage, targetLanguages, callback, roomUsersArrayExcludingSender, senderName) {
   const projectId = 'translated-chat';
   const {Translate} = require('@google-cloud/translate').v2;
   const translate = new Translate({projectId});
   let translations = {};
-  let translationsReturnedSoFar = 0;
+  translations[fromLanguage] = message;
+  let numberOfTranslationsDone = 0;
   const numberOfTargetLanguages = targetLanguages.length;
 
   const addToCallback = translationResult => {
 c(translationResult)
-    translations[targetLanguages[translationsReturnedSoFar]] = translationResult;
-    const numberOfTranslationsDone = Object.keys(translations).length;
+    const languageJustTranslated = targetLanguages[numberOfTranslationsDone]
+    translations[languageJustTranslated] = translationResult
+    numberOfTranslationsDone = Object.keys(translations).length - 1
     if (numberOfTranslationsDone === numberOfTargetLanguages) {
       callback(translations, roomUsersArrayExcludingSender, senderName)
     } else {
-      translationsReturnedSoFar++;
-      go(targetLanguages[translationsReturnedSoFar])
+      const targetLanguage = targetLanguages[translationsAddedSoFar]
+      go(targetLanguage)
     }
   }
 
   async function go(targetLanguage) {
-    const translationResult = await translate.translate(message, targetLanguage);
-    c(translationResult[1].data.translations)//[1].detectedSourceLanguage)
-    c(translationResult[0])
+    const translationResult = await translate.translate(message, targetLanguage)
     addToCallback(translationResult[0])
   }
 
