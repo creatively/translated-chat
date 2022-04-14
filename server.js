@@ -83,14 +83,6 @@ app.get('/', (req, res) => {
   res.redirect('/'+ newRoomName)
 })
 
-app.get('/about', (req, res) => {
-  res.render('about', {})
-})
-
-app.get('/privacy-policy', (req, res) => {
-  res.render('privacy-policy', {})
-})
-
 // Goes straight here if a roomname in url
 app.get('/:room', (req, res) => {
   res.render('room', { 
@@ -99,7 +91,6 @@ app.get('/:room', (req, res) => {
     usersIp: req.headers['x-forwarded-for'] || req.socket.localAddress ,
   })
 })
-
 
 
 

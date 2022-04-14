@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>translation.chat</title>
+  <title>translated.chat</title>
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Delius">
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Nunito">
   <link rel="stylesheet" href="./css/topbar.css">
@@ -16,18 +16,17 @@
     usersIp = usersIp.split(',')[0]
     var supportedLanguagesString =<%-JSON.stringify(supportedLanguages)%>
     var supportedLanguages = JSON.parse(supportedLanguagesString)
-  </script>
-  <script defer src="/socket.io/socket.io.js"></script>
-  <script defer src="./js/script.js"></script>
-  <script>
+
     function addClipboardCopier(textAlternativeNeeded) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        document.write('<image class="icon-copy" src="./images/icon-copy.png" onclick="copyToClipboard()" />')
+        document.write('<image class="icon-copy" src="./images/icon-copy.png" alt="click to copy this page url to give to others to join you" />')
       } else if (textAlternativeNeeded) {
         document.write(location.href)
       }
     }
   </script>
+  <script defer src="/socket.io/socket.io.js"></script>
+  <script defer src="./js/script.js"></script>
 
 </head>
 <body>
@@ -38,15 +37,15 @@
   <!-- TOP BAR -->
   <header>
     <div class="topbar">
-        <img class="logo" src="./images/logo.png" alt="logo" height="22" />
-        <a href="#"><img class="icon-menu" src="./images/icon-menu.png" alt="menu opener" height="24" /></a>
+        <img class="logo" src="./images/logo.png" alt="logo for translated.chat" height="22" />
+        <a href="#"><img class="icon-menu" src="./images/icon-menu.png" alt="menu opener" height="25" /></a>
         <script>addClipboardCopier()</script>
     </div>
 
     <ul class="menu-titles">
 
         <li class="menu-item about">
-            <a href="#" name="#about"><h2>ABOUT translated.chat</h2></a>
+            <a href="#" name="#about"><h2>ABOUT</h2></a>
             <div class="menu-item-content">
                 >  translated.chat makes life easier for friends with different first languages<br>
                 >  translated.chat provides a free chat tool that automatically translates messages as they fly between friends<br>
@@ -60,7 +59,7 @@
         <li class="menu-item privacy">
             <a href="#" name="privacy"><h2>PRIVACY POLICY</h2></a>
             <div class="menu-item-content">
-              <h4>INFORMATION PERSISTENCE</h4>
+              <h3>INFORMATION PERSISTENCE</h3>
               >  This website doesn't use a database<br>
               >  This website doesn't retain any user-related information - neither personal information or chat content<br>
               >  None of a user's chat content, or user's name and language are persisted anywhere except for in other user's chat page browser windows until they close their relevant browser window. <br>
@@ -83,43 +82,20 @@
         <li class="menu-item carbon">
             <a href="#" name="carbon"><h2>CARBON USAGE</h2></a>
             <div class="menu-item-content">
-                <h4>CARBON EMISSIONS POLICY</h4>
+                <h3>CARBON EMISSIONS POLICY</h3>
                 All electricity used by this website, both in the hosting of, and in the development of, is obtained from renewable sources without use of fossil fuels, with the exception of any 3rd party API services used by this website. <br>
             </div>
         </li>
     </ul>
-
-    <script>
-        var menuIcon = document.querySelector('.icon-menu')
-        var menuTitles = document.querySelector('.menu-titles')
-        var headingAbout = document.querySelector('.about')
-        var headingPrivacyPolicy = document.querySelector('.privacy')
-        var headingCarbonUsage = document.querySelector('.carbon')
-        var overlay = document.getElementById('overlay')
-        menuIcon.addEventListener('click', toggleMenu)
-        headingAbout.addEventListener('click', toggleMenuItem)
-        headingPrivacyPolicy.addEventListener('click', toggleMenuItem)
-        headingCarbonUsage.addEventListener('click', toggleMenuItem)
-
-        function toggleMenu() {
-            if (menuTitles.classList.contains('open')) {
-              menuTitles.classList.remove('open')
-              overlay.classList.remove('on')
-            } else {
-              menuTitles.classList.add('open')
-              overlay.classList.add('on')
-            }
-            return false
-        }
-
-        function toggleMenuItem(e) {
-            var contentDiv = e.target.parentElement.parentElement.querySelector('.menu-item-content')
-            contentDiv.classList.contains('open') ? contentDiv.classList.remove('open') : contentDiv.classList.add('open')
-            return false
-        }
-    </script>
   </header>
 
+  
+
+  <div class="number"></div>
+
+
+
+  
 
   <!-- LIST OF MESSAGES -->
   <div id="message-container">
@@ -129,8 +105,12 @@
 
   <!-- MODAL FOR NAME AND LANGUAGE -->
   <div class="card">
-    <h3></h3>
-    <h3>Start chatting across multiple languages now. No need for registrations, logins or app downloads. Others can join in using this link</h3>
+    <h1>Chat with auto translation</h1>
+    <ul class="card-bulletpoints">
+      <li>Start chatting across multiple languages now</li>
+      <li>No need for registrations, logins or app downloads</li>
+      <li>Copy this page link to invite others</li>
+    </ul>
     
     <script>addClipboardCopier('textAlternativeNeeded')</script><br><br>
 
@@ -162,10 +142,9 @@
 
   <!-- MESSAGE ENTERING BOX -->
   <form id="send-container">
-    <input type="text" id="message-input">
+    <input type="text" aria-label="message to send" id="message-input">
     <button type="submit" id="send-button">Send</button>
   </form>
 
 </body>
-<script>document.body.classList.add('bg')</script>
 </html>

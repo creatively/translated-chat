@@ -3,7 +3,7 @@ header                  {position:relative;width:100%;z-index:10}
 .overlay.on             {display:block}
 .topbar                 {padding:10px;height:20px;background-color:white;box-shadow:0px 0px 5px 1px #555;}
         .logo           {float:left}
-        .topbar .icon-copy      {float:right;padding:0 12px;border-radius:0;cursor:pointer;background:#fff}
+        .topbar .icon-copy      {float:right;padding:1px 2px;border-radius:5px;cursor:pointer;background: #f282fa;margin-right:7px}
         .icon-menu      {float:right;cursor:pointer}
     ul.menu-titles      {display:none}
     ul.menu-titles.open {display:block;margin:0;padding:0;list-style:none}

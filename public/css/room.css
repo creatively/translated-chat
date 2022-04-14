@@ -11,6 +11,11 @@ body {
   body.bg {
     background-image: url('/images/cartoon-blue-background.jpg');
   }
+  /* viewport flexer to go with relevant js */
+  body {
+    height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+    height: calc(var(--vh, 1vh) * 100);
+  }
 
   a {
     text-decoration: none
@@ -180,7 +185,7 @@ body {
         z-index:8;
       }
       #message-container div.text-subinfo {
-        margin-bottom: 1px;
+        margin-bottom: 4px;
       }
 
         .text-subinfo span {
@@ -210,15 +215,19 @@ body {
   max-width: 350px;
   z-index: 3;
   text-align: center; 
-  width: 320px;
   background:#017387;
   color:white;
   text-align: center;
 }
-
-.card h3 {
-  font-weight: 400;
+.card h1{
+  font-size: 26px;
 }
+  .card-bulletpoints {
+    margin-top:0;
+    display: inline-block;
+    text-align: left;
+  }
+
 .url {
   position: relative;
   border-radius: 8px;
@@ -236,13 +245,13 @@ body {
     color: #bbb;
   }
   .icon-copy {
-    padding: 3px;
-    border-radius: 2px;
+    padding: 2px;
+    border-radius: 5px;
     cursor: pointer;
-    background: #fff;
+    background: #f282fa;
   }
     .icon-copy.copied {
-      opacity: 0.3;
+      opacity: 0.6;
     }
 
 .name-and-language-form {
@@ -255,13 +264,16 @@ body {
 input,
 select, 
 button {  
-    padding: 8px 15px;
     border-radius: 5px;
-    margin: 5px 0px 10px 0px;    
+    margin: 5px 0px 10px 0px; 
+    padding: 0 10px;   
     border: 1px solid #000;
     box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 2px 2px;
     font-size: 18px;  
     font-weight: 300;
+    outline: none;
+    width: calc(100% - 150px);
+    height: 40px;
 }
 
 button,
