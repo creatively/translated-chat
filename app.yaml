@@ -1,16 +1,7 @@
 # [START app_yaml]
 
-# GCLOUD
 runtime: nodejs
 env: flex
 instance_class: F1
 network:
   session_affinity: true
-
-
-# LOCALHOST
-# runtime: nodejs16
-# env: standard
-# instance_class: F1
-# network:
-#   session_affinity: true

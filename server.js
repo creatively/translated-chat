@@ -7,29 +7,42 @@ const getRandomCharacters = require('./custom-modules/random-characters.js')
 const translate = require('./custom-modules/translate.js')
 const { getSupportedLanguagesObject , getLanguageDescriptionFromLanguageCode } = require('./custom-modules/languages.js')
 const getLocationAndWeather = require('./custom-modules/getLocationAndWeather.js')
-// const {ErrorReporting} = require('@google-cloud/error-reporting')
-// const errors = new ErrorReporting()
 
 app.set('views', './views')
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
-// app.use(errors.express)
 dotenv.config()
 
 const c = txt => console.log(txt)
 const ct = obj => console.table(obj)
-// const gLog = errorToLogInGoogleCloud => errors.report(errorToLogInGoogleCloud)
-// const gLogExpress = errorToLogInGoogleCloud => new Error(errorToLogInGoogleCloud)
 
 const port = process.env.PORT || 8080
 server.listen(port, () => {
   c(`server started on :${port}`)
-  // gLogExpress(`server started on :${port}`)
 })
 
 
-// ------- ROOMS INIT --------
+// ------- HANDLE INCOMING REQUESTS -------
+
+// USER GOES HERE IF NO ROOM NAME APPENDED TO URL
+app.get('/', (req, res) => {
+  newRoomName = getRandomCharacters(5)
+  c(`>>> room :${newRoomName} created`)
+  res.redirect('/'+ newRoomName)
+})
+
+// USER GOES HERE IF A ROOM NAME IS ALREADY APPENDED TO URL
+app.get('/:room', (req, res) => {
+  res.render('room', { 
+    roomName: req.params.room,
+    supportedLanguages: JSON.stringify(getSupportedLanguagesObject()),
+    usersIp: req.headers['x-forwarded-for'] || req.socket.localAddress ,
+  })
+})
+
+
+// ------- CHAT ROOM UTIL FUNCTIONS --------
 const rooms = { }
 
 function getUserRooms(usersConnection) {
@@ -73,41 +86,18 @@ const getRoomUsersNameAndLanguage = roomName => {
   return roomUsers
 }
 
-
-// ------- INCOMING REQUESTS -------
-
-// Goes here if no roomname in url
-app.get('/', (req, res) => {
-  newRoomName = getRandomCharacters(5)
-  c(`>>> room :${newRoomName} created`)
-  res.redirect('/'+ newRoomName)
-})
-
-// Goes straight here if a roomname in url
-app.get('/:room', (req, res) => {
-  res.render('room', { 
-    roomName: req.params.room,
-    supportedLanguages: JSON.stringify(getSupportedLanguagesObject()),
-    usersIp: req.headers['x-forwarded-for'] || req.socket.localAddress ,
-  })
-})
-
-
-
-// ------- SOCKET HANDLING -------
-
 const addUserToRoom = (roomName, userObject) => {
   if (!rooms) rooms = {}
   if (!rooms[roomName]) rooms[roomName] = {}
   if (!rooms[roomName].users) rooms[roomName].users = {}
-
   rooms[roomName].users[userObject.id] = userObject
 }
 
 
+// ------- SOCKET HANDLING -------
 io.on('connection', (usersConnection) => {
 
-  // New User
+  // HANDLE A USER JOINING A ROOM
   usersConnection.on('new-user', (roomName, name, language, usersIp) => {
     usersConnection.join(roomName)
     addUserToRoom(roomName, {
@@ -128,7 +118,7 @@ io.on('connection', (usersConnection) => {
     })
   })
 
-  // Disconnect
+  // HANDLE A USER DISCONNECTING
   usersConnection.on('disconnect', () => {
     getUserRooms(usersConnection).forEach(roomName => {
       const leaversName = rooms[roomName].users[usersConnection.id].name
@@ -144,39 +134,24 @@ io.on('connection', (usersConnection) => {
     })
   })
 
-  // Translate & Emit message
+
+  // ------- TRANSLATION HANDLING ------
+
   usersConnection.on('send-chat-message', (room, message) => {
 
-    const roomUsersArray = getRoomUsersArray(room, usersConnection)
-    const numberInRoom = roomUsersArray.length
-
+    // CALLBACK WHEN TRANSLATIONS RECEIVED
     const callback_getTranslations = (translations, roomUsersArray, senderName) => {
       roomUsersArray.forEach(user => {
         emitMessage(user.id, senderName, translations[user.language])
       })
     }
 
+    // 3 TYPES OF EMITTING MESSAGES OUT TO THE USER(s) 
     const emitMessage = (userId, senderName, message) => {
       io.to(userId).emit(
         'chat-message', {
           message: message, 
           name: senderName 
-        }
-      )
-    }
-
-    const emitInfoMessageByUserId = (userId, message) => {
-      io.to(userId).emit(
-        'info-message', {
-          message: message
-        }
-      )
-    }
-
-    const emitInfoMessageByRoom = (roomName, message) => {
-      io.in(roomName).emit(
-        'info-message', {
-          message: message
         }
       )
     }
@@ -195,29 +170,46 @@ io.on('connection', (usersConnection) => {
       })
     }
 
-    // Main 'send-chat-message' Code
-    if (numberInRoom > 1) {
-      const roomUsersArrayExcludingSender = roomUsersArray.filter(user => !user.sender)
-      const fromLanguage = roomUsersArray.filter(user => user.sender)[0].language
-      const senderName = roomUsersArray.filter(user => user.sender)[0].name
-      const roomUsersWithADifferentLanguage = roomUsersArray.filter(user => user.language !== fromLanguage)
-      const translationNeeded = roomUsersWithADifferentLanguage.length > 0
+    // SEND MESSAGE FOR TRANSLATION, OR HANDLE OTHERWISE
+    const roomUsersArray = getRoomUsersArray(room, usersConnection)
 
-      if (translationNeeded) {
-        const targetLanguages = Array.from(new Set(roomUsersWithADifferentLanguage.map(user => user.language)))
-        translate(
-          message, 
-          fromLanguage, 
-          targetLanguages, 
-          callback_getTranslations, 
-          roomUsersArrayExcludingSender, 
-          senderName
-        )
+    const sendForTranslationWithCallback = (usersInfo, callback) => {
+      translate(
+        message, 
+        usersInfo.fromLanguage, 
+        usersInfo.targetLanguages, 
+        usersInfo.roomUsersArrayExcludingSender, 
+        usersInfo.senderName,
+        callback
+      )
+    }
+
+    class UsersInfo {
+      constructor(room, roomUsersArray) {
+        this.room = room
+        this.roomUsersArray = roomUsersArray
+        this.numberInRoom = roomUsersArray.length
+        this.roomUsersArrayExcludingSender = this.roomUsersArray.filter(user => !user.sender)
+        this.fromLanguage = this.roomUsersArray.filter(user => user.sender)[0].language
+        this.senderName = this.roomUsersArray.filter(user => user.sender)[0].name
+        this.roomUsersWithADifferentLanguage = this.roomUsersArray.filter(user => user.language !== this.fromLanguage)
+        this.targetLanguages = Array.from(new Set(this.roomUsersWithADifferentLanguage.map(user => user.language)))
+        this.translationNeeded = this.roomUsersWithADifferentLanguage.length > 0
+      }
+    }
+
+    // 3 POTENTIAL SCENARIOS : 
+    //    (1) USER IS ONLY USER, (2) USERS ALL HAVE ONE LANGUAGE, (3) USERS HAVE MULTIPLE LANGUAGES SO NEEDS TRANSLATION
+    if (roomUsersArray.length >1) {
+      const usersInfo = new UsersInfo(room, roomUsersArray)
+      if (usersInfo.translationNeeded) {
+        sendForTranslationWithCallback(usersInfo, callback_getTranslations)
       } else {
-        emitUntranslatedMessage(message, roomUsersArrayExcludingSender, senderName)
+        emitUntranslatedMessage(message, usersInfo.roomUsersArrayExcludingSender, usersInfo.senderName)
       }
     } else {
       emitInfoMessageByRoomOnlyUser(room, `You're currently the only person in this chat`)
     }
+
   })
 })

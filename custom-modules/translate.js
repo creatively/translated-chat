@@ -25,7 +25,7 @@ const ct = txt => console.table(txt);
 
 
 
-module.exports = function translate(message, fromLanguage, targetLanguages, callback, roomUsersArrayExcludingSender, senderName) {
+module.exports = function translate(message, fromLanguage, targetLanguages, roomUsersArrayExcludingSender, senderName, callback) {
   const projectId = 'translated-chat';
   const {Translate} = require('@google-cloud/translate').v2;
   const translate = new Translate({projectId});
