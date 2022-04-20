@@ -8,13 +8,11 @@ const messageInput = document.getElementById('message-input')
 // UTIL FUNCTIONS
 const c = txt => console.log(txt);
 const ct = obj => console.table(obj);
-const add = text => setTimeout(() => messageContainer.innerHTML = messageContainer.innerHTML + text, 1000)
+const add = text => setTimeout(() => {messageContainer.innerHTML = messageContainer.innerHTML + `<i>${text}</i><br>`}, 500)
 const isCssSupported = property => property in document.body.style
 
 const shiftDownMessageContainerViewport = () => {
-  console.log('in function')
   const messageContainerTotalHeight = document.getElementById('message-container').clientHeight
-  console.log('messageContainerTotalHeight = '+messageContainerTotalHeight)
   window.scrollTo(0, messageContainerTotalHeight)
 }
 
@@ -29,6 +27,11 @@ document.getElementById('send-button').addEventListener('click', shiftDownMessag
       //    but not keyboard show (possibly just not triggering window.resize)
 
 /*
+  if (navigator.onLine) {   // true/false
+  window.addEventListener('online', function(e) {
+  window.addEventListener('offline', function(e) {
+
+
   document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState == "visible") {
 
@@ -37,8 +40,29 @@ document.getElementById('send-button').addEventListener('click', shiftDownMessag
       e.preventDefault();
       e.returnValue = '';
   });
+
+
+
 */
 
+/*
+OBJECT FOR CONNECTION HANDLING
+socket.emit('user-status-change', roomName, status)
+  statuses = [[ back-online , tab-switched-back , tab-closing ]]
+
+
+SERVER.JS
+  usersConnection.on('disconnect', () => {
+    getUserRooms(usersConnection).forEach(roomName => {
+      const leaversName = rooms[roomName].users[usersConnection.id].name
+      ... io.in(roomName).emit('user-disconnected', leaversName, latestActiveUsers)
+      ----
+
+
+
+
+
+*/
 
 
 // Name & Language Inout Form
@@ -114,36 +138,10 @@ const getHTMLForCurrentsUsersOnline = activeUsers => {
 const nameAndLanguageForm = document.querySelector('.name-and-language-form') || null;
 nameAndLanguageForm ? nameAndLanguageForm.addEventListener('submit', handleModalSubmit) : null;
 
-function setUpLogOfOnlineOffline() {
-  window.addEventListener('offline', function(e) { console.log('--- offline');add('<<< offline') });
-  window.addEventListener('online', function(e) { console.log('--- online');add('>>> online') });
-
-  navigator.connection.onchange=function() {
-    navigator.onLine ? c('>>2> online') && add('online 2') : c('<<2< offline' && add('offline 2'))
-  }
 
 
-  // also note that setting an image src can delay leaving the page
-  // the server could then know if the user really had gone elsewhere or
-  // if just the connection has gone. 
-  // NB. Socket.io may handle this under the hood, but worth a look
-  // NB2. navigator.sendBeacon also available for a potentially relevant situation
-/*
-  const io = ...; // initialize socket.io how you wish
-  io.eio.pingTimeout = 120000; // 2 minutes
-  io.eio.pingInterval = 5000;  // 5 seconds
 
-  was :
-  const server = engine.listen(3000, {
-    pingTimeout: 2000,
-    pingInterval: 10000
-  });
 
-  
-
-*/
-}
-setUpLogOfOnlineOffline()
 
 
 // Socket handling
@@ -162,6 +160,9 @@ function joinNewUser(name, language) {
     socket.emit('send-chat-message', roomName, message)
     messageInput.value = ''
   })
+
+
+
 }
 
 // receive chat message
@@ -216,27 +217,10 @@ document.body.onload = () => {
   document.getElementById('input-name').focus()
 }
 
-
-    window.addEventListener('DOMContentLoaded', (event) => {
-      document.ontouchmove = function(e){
-        e.preventDefault();
-      }
-      
-      document.getElementById('message-input').onfocus = function () {
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-      }
-    });
-
-
-
-
 function copyToClipboard(e) {
-//add('copyToClipboard called')
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(location.href)
     document.querySelectorAll('.icon-copy').forEach(item => {
-//add('item')
       item.classList.add('copied')
     })
   }
@@ -293,15 +277,3 @@ function appendMessage(textObject) {
     messageContainer.append(activeUsersElement)
   }
 
-
-function handleMobileViewportShift() {
-// Android condenses viewport (and triggers 'resize' event)
-// iOS puts viewport underneath
-
-  var input = document.getElementById('message-input')
-  input.addEventListener('focus', () => {
-      setTimeout(() => {
-
-      }, 1000);
-  })
-}
