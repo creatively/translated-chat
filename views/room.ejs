@@ -20,9 +20,9 @@
     function addClipboardCopier(textAlternativeNeeded) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         document.write('<image class="icon-copy" src="./images/icon-copy.png" alt="click to copy this page url to give to others to join you" />')
-      } else if (textAlternativeNeeded) {
-        url = location.url
-        document.write(`This is the chat url to share : <br/>${url}`)
+      } else if (textAlternativeNeeded == true) {
+        const url = location.url
+        document.write(`chat link is <a href="${url}">${url}</a>`)
       }
     }
   </script>
@@ -40,7 +40,7 @@
     <div class="topbar">
         <img class="logo" src="./images/logo.png" alt="logo for translated.chat" height="22" />
         <a href="#"><img class="icon-menu" src="./images/icon-menu.png" alt="menu opener" height="25" /></a>
-        <script>addClipboardCopier(textAlternativeNeeded)</script>
+        <script>addClipboardCopier(true)</script>
     </div>
 
     <ul class="menu-titles">

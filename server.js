@@ -17,7 +17,7 @@ dotenv.config()
 const port = process.env.PORT || 8080
 
 server.listen(port, () => {
-  c(`app started on port :${port}`)
+  console.log(`app started on port :${port}`)
 })
 
 
@@ -26,7 +26,7 @@ server.listen(port, () => {
 // USER GOES HERE IF NO ROOM NAME APPENDED TO URL
 app.get('/', (req, res) => {
   newRoomName = getRandomCharacters(5)
-  c(`>>> room :${newRoomName} created`)
+  console.log(`>>> room :${newRoomName} created`)
   res.redirect('/'+ newRoomName)
 })
 
@@ -127,7 +127,7 @@ io.on('connection', (usersConnection) => {
           io.in(roomName).emit('user-disconnected', leaversName, latestActiveUsers)
         } else {
           delete rooms[roomName]
-          c(`---- room :${roomName} closed <<<<`)
+          console.log(`---- room :${roomName} closed <<<<`)
         }
     })
   })
