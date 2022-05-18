@@ -14,12 +14,10 @@ app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 dotenv.config()
 
-const c = txt => console.log(txt)
-const ct = obj => console.table(obj)
-
 const port = process.env.PORT || 8080
+
 server.listen(port, () => {
-  c(`server started on :${port}`)
+  c(`app started on port :${port}`)
 })
 
 

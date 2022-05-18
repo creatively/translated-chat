@@ -21,7 +21,8 @@
       if (navigator.clipboard && navigator.clipboard.writeText) {
         document.write('<image class="icon-copy" src="./images/icon-copy.png" alt="click to copy this page url to give to others to join you" />')
       } else if (textAlternativeNeeded) {
-        document.write(location.href)
+        url = location.url
+        document.write(`This is the chat url to share : <br/>${url}`)
       }
     }
   </script>
@@ -39,7 +40,7 @@
     <div class="topbar">
         <img class="logo" src="./images/logo.png" alt="logo for translated.chat" height="22" />
         <a href="#"><img class="icon-menu" src="./images/icon-menu.png" alt="menu opener" height="25" /></a>
-        <script>addClipboardCopier()</script>
+        <script>addClipboardCopier(textAlternativeNeeded)</script>
     </div>
 
     <ul class="menu-titles">
