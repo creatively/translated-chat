@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm start",
-    "start_was": "node server.js",
+    "start": "node server.js",
     "stop": "killall node",
     "dev": "nodemon ./server.js"
   },
