@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "stop": "killall node"
+    "start": "npm start",
+    "start_was": "node server.js",
+    "stop": "killall node",
+    "dev": "nodemon ./server.js"
   },
   "author": "",
   "license": "ISC",
@@ -22,7 +24,7 @@
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.0"
+    "nodemon": "^1.19.4"
   },
   "engines": {
     "node": "17.3.1",
