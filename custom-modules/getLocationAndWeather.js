@@ -2,8 +2,6 @@ module.exports = function getLocationAndWeather(usersIp, callback) {
 
     var axios = require("axios").default
     let callbackData = {};
-    const c = txt => console.log(txt)
-    const ct = obj => console.table(obj)
 
     // Utils
     const convertLocaltimeToHoursOnly = dateTime => {
@@ -12,36 +10,27 @@ module.exports = function getLocationAndWeather(usersIp, callback) {
         return time.replace('.', ':').replace(' ','0')
     }
 
-
     // Get Location Data
-    axios.request({url: `https://ipwhois.app/json/${usersIp}`})
+    const urlApiLocationData = `https://ipwhois.app/json/${usersIp}`
+
+    axios.request({url: urlApiLocationData})
         .then(function (response) {
             const data = response.data;
+            if (response.status !== 200) 
+                throw Error(`--- API IpWhoIs Server call - unable to get a valid response, code=${response.status}`)
+            if (!data.success)
+                throw Error(`--- API IpWhoIs Server call - returned an error message, message="${data.message}"`)
+
             callbackData['city'] = data.city
             callbackData['country'] = data.country
             callbackData['countryFlag'] = data.country_flag
-            callbackData['latitude'] = data.latitude
-            callbackData['longitude'] = data.longitude
             callbackData['locationApiWorkedOK'] = true
         }).catch((e) => {
+            console.log(`ERROR calling : ${urlApiLocationData}`)
+            console.log(e)
             callbackData['locationApiWorkedOK'] = false
+        }).finally(function(){
+            console.log(`---finally`)
             callback(callbackData)
-        }).then(function(){
-
-            // Get Weather data
-            const coordinates = `${callbackData['latitude']},${callbackData['longitude']}`
-            axios.request({url: `https://api.weatherapi.com/v1/current.json?key=${process.env.KEY_API_WEATHERAPI}&q=${coordinates}`})
-                .then(function (response) {
-                    const data = response.data;
-                    callbackData['temp'] = data.current.temp_c
-                    callbackData['iconUrl'] = 'https:'+data.current.condition.icon
-                    callbackData['localtime'] = convertLocaltimeToHoursOnly(data.location.localtime);
-                    callbackData['weatherApiWorkedOK'] = true
-                }).catch(function (e) {
-                    console.error('>>>>> Weather API call failed <<<<');
-                    callbackData['weatherApiWorkedOK'] = false
-                }).then(() => {
-                    callback(callbackData)
-                })
         })
     }

@@ -1,0 +1,24 @@
+/*
+
+GOOGLE TRANSLATE API NOTES
+==========================
+
+This "translate" method/module interacts with a remote translation API
+    results in ....
+      { 
+        'fr' : 'Bonjour.',
+        'de', 'Hallo. - Was ist los?'
+      }
+*/
+
+
+/* 
+GOOGLE QUOTA LIMITS HIT :
+Google Translate 403 errors. 
+  inc. '...Daily Limit Exceeded...' - exceeded a daily quota
+  inc. '...User Rate Limit Exceeded...' - per minute quota.
+*/
+// process.env.GOOGLE_API_KEY
+
+// Service Account Name = 'translated-chat'
+// Service Account Id = 'translated-chat-630'

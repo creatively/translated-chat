@@ -20,6 +20,8 @@ server.listen(port, () => {
   console.log(`app started on port :${port}`)
 })
 
+const isRequestFromLocalhost = (req) => req.rawHeaders.includes(`localhost:8080`)
+const hardCodedAlternativeIpForLocahost = `84.67.54.222`
 
 // ------- HANDLE INCOMING REQUESTS -------
 
@@ -32,10 +34,12 @@ app.get('/', (req, res) => {
 
 // USER GOES HERE IF A ROOM NAME IS ALREADY APPENDED TO URL
 app.get('/:room', (req, res) => {
+  const usersIpValue = isRequestFromLocalhost ? hardCodedAlternativeIpForLocahost
+                                              : req.headers['x-forwarded-for'] || req.socket.localAddress
   res.render('room', { 
     roomName: req.params.room,
     supportedLanguages: JSON.stringify(getSupportedLanguagesObject()),
-    usersIp: req.headers['x-forwarded-for'] || req.socket.localAddress ,
+    usersIp: usersIpValue,
   })
 })
 
@@ -106,7 +110,7 @@ io.on('connection', (usersConnection) => {
     })
 
     const activeUsers = getRoomUsersNameAndLanguage(roomName)
-    getLocationAndWeather(usersIp ,newUsersLocationAndWeather => {
+    getLocationAndWeather(usersIp, newUsersLocationAndWeather => {
       const newUserNameAndLanguage = {
         name: name,
         language: getLanguageDescriptionFromLanguageCode(language)
