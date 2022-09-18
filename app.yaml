@@ -1,7 +1,7 @@
 # [START app_yaml]
 
-runtime: nodejs
-env: flex
+runtime: nodejs17
+env: standard
 instance_class: F1
 network:
   session_affinity: true
