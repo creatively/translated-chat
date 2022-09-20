@@ -30,7 +30,6 @@ module.exports = function getLocationAndWeather(usersIp, callback) {
             console.log(e)
             callbackData['locationApiWorkedOK'] = false
         }).finally(function(){
-            console.log(`---finally`)
             callback(callbackData)
         })
     }
