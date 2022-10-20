@@ -21,7 +21,7 @@ server.listen(port, () => {
 })
 
 const isRequestFromLocalhost = (req) => req.rawHeaders.includes(`localhost:8080`)
-const hardCodedAlternativeIpForLocahost = `84.67.54.222`
+const hardCodedAlternativeIpForLocahost = process.env.IP_FOR_LOCALHOST || `0.0.0.0`
 
 // ------- HANDLE INCOMING REQUESTS -------
 

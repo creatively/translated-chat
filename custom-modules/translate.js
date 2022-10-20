@@ -1,7 +1,13 @@
 module.exports = function translate(message, fromLanguage, targetLanguages, roomUsersArrayExcludingSender, senderName, callback) {
   const projectId = 'translated-chat';
   const { Translate } = require('@google-cloud/translate').v2;
-  const translate = new Translate({projectId});
+  const translate = new Translate({
+    projectId,
+    credentials: {
+      private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      client_email: process.env.GOOGLE_CLIENT_EMAIL
+    }
+  })
   let translations = {};
   translations[fromLanguage] = message;
   let numberOfTranslationsDone = 0;
